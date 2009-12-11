@@ -1,0 +1,54 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    margin: 10px 0;
+    padding: 0 10px;
+}
+
+h1 { font-size: 160%; }
+h2 { font-size: 140%; }
+h3 { font-size: 130%; }
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 10px;
+}
+
+td, th {
+    padding: 1px 5px;
+    margin: 0;
+    text-align: left;
+    vertical-align: top;
+}
+
+body {
+    color: black;
+    background-color: white;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 83%;
+}
+
+table.results th {
+    background-color: #e7e7e7;
+}
+table.results td, table.results th {
+    border: 1px solid black;
+}
+
+td.n, th.n {
+    text-align: right;
+}
+
+td.solved {
+    background-color: #99ffa1;
+}
+td.unsolved {
+    background-color: #ff99ac;
+}
+td.best {
+    font-weight: bold;
+}

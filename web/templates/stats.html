@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Solver Stats</title>
+    <link rel="stylesheet" type="text/css" href="${prefix}web/css/style.css"/>
+</head>
+<body>
+<h1>${title}</h1>
+<table class="results">
+    ${headrow(heading)}\
+    %for row in rows:
+        ${statrow(row)}\
+    %endfor
+    ${footerrow(footer)}\
+</table>
+</body>
+</html>
+
+<%def name="headrow(row)">\
+<tr>\
+<th>${row[0]}</th>\
+%for spec in row[1:]:
+<th>${spec.replace(",", ",<br/>")}</th>\
+%endfor
+</tr>
+</%def>
+
+<%def name="footerrow(row)">\
+<tr>\
+<th>${row[0]}</th>\
+%for value in row[1:]:
+<th class="n">${formatting.number(value)}</th>\
+%endfor
+</tr>
+</%def>
+
+<%def name="statrow(row)">\
+<tr>\
+<td><a href="${prefix + row[0]}">${row[0]}</a></td>\
+<%
+values = [value for value, result in row[1:] if result is not None and result.solved]
+if len(values) > 0:
+    min_value = min(values)
+else:
+    min_value = None
+%>
+%for value, result in row[1:]:
+    %if value is None:
+        <td></td>\
+    %elif not result.solved:
+        <td class="n unsolved">${formatting.number(value)}</td>\
+    %else:
+        <td class="n solved ${'best' if value == min_value else ''}">${formatting.number(value)}</td>\
+    %endif%
+%endfor
+</tr>
+</%def>
