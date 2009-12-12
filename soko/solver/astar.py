@@ -42,6 +42,7 @@ def find_path(env, s, cost_fn):
     log_g = LOG_G_INCREMENT
     num_visited = 0
 
+    start_s = s
     cur = _create_node(env, s, 0, None, None, cost_fn)
     queue.schedule(cur)
     while not queue.is_empty():
@@ -72,7 +73,7 @@ def find_path(env, s, cost_fn):
 
     logging.debug("total %s: %s", cur.g, num_visited)
     if cur.h != 0:
-        logging.warn("no way to the goal from: %s", s)
+        logging.warn("no way to the goal from:\n%s", env.format(start_s))
         return None
 
     path = []
