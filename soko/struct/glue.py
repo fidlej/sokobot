@@ -27,6 +27,10 @@ class EnvGlue(Env):
     def estim_cost(self, s, cost_limit=None):
         return self.estimator.estim_cost(s)
 
+    def format(self, s):
+        from soko.mazing import Maze
+        return str(Maze(s))
+
 
 def _immutablize(field):
     return tuple(tuple(line) for line in field)
