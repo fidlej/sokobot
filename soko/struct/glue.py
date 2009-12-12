@@ -10,7 +10,8 @@ class EnvGlue(Env):
     def configure(self, config):
         #TODO: allow to use different classes based on the command line args
         self.expander = PushExpander()
-        self.estimator = sokoestimator.BoxCountingSokoEstimator()
+        #self.estimator = sokoestimator.BoxCountingSokoEstimator()
+        self.estimator = sokoestimator.SokoEnvSokoEstimator()
         self.estimator.setup_goal(self.maze)
         self.model = ActionModel()
 

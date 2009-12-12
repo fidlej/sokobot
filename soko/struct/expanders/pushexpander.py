@@ -22,7 +22,7 @@ class PushExpander(object):
         """
         actions = []
         maze = Maze(s)
-        pos = maze.find_all_positions(PLAYER_MARKS)[0]
+        (pos,) = maze.find_all_positions(PLAYER_MARKS)
         man_mark = maze.get(pos)
         for shift in SHIFTS:
             new_pos = v2.sum(pos, shift)
