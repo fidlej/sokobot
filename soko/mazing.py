@@ -40,7 +40,7 @@ class Maze(object):
     def __str__(self):
         output = ""
         for line in self.field:
-            output += line + "\n"
+            output += "".join(line) + "\n"
         return output
 
 
