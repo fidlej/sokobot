@@ -38,10 +38,10 @@ class Maze(object):
         return rows
 
     def __str__(self):
-        output = ""
+        rows = []
         for line in self.field:
-            output += "".join(line) + "\n"
-        return output
+            rows.append(''.join(line))
+        return "\n".join(rows)
 
 
 def parse_maze(level_filename):
