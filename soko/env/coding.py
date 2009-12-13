@@ -3,7 +3,7 @@ PLAYER_MARKS = "@+"
 WALL_MARKS = "#"
 TARGET_MARKS = ".+*"
 BOX_MARKS = "$*"
-EMPTY_MARKS = " "
+EMPTY_MARKS = " ."
 
 # Legend:
 # @ ... player

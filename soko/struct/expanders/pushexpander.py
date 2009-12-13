@@ -14,8 +14,6 @@ SHIFTS = [
         (0,1),
         ]
 
-WALKABLE_MARKS = EMPTY_MARKS + TARGET_MARKS
-
 class PushExpander(object):
     def get_actions(self, s):
         """Returns all possible actions from the given state.
@@ -27,18 +25,18 @@ class PushExpander(object):
         for shift in SHIFTS:
             new_pos = v2.sum(pos, shift)
             cell = maze.get(new_pos)
-            if cell in WALKABLE_MARKS:
+            if cell in EMPTY_MARKS:
                 actions.append(_action_move(maze, pos, new_pos))
             elif cell in BOX_MARKS:
                 behind_new_pos = v2.sum(new_pos, shift)
-                if maze.get(behind_new_pos) in WALKABLE_MARKS:
+                if maze.get(behind_new_pos) in EMPTY_MARKS:
                     actions.append(_action_push(
                         maze, pos, new_pos, behind_new_pos))
 
         return actions
 
 # Marks without and with the target below them.
-TARGETED_EMPTY_MARKS = (EMPTY_MARKS[0], TARGET_MARKS[0])
+TARGETED_EMPTY_MARKS = (EMPTY_MARKS[0], EMPTY_MARKS[1])
 TARGETED_PLAYER_MARKS = (PLAYER_MARKS[0], PLAYER_MARKS[1])
 TARGETED_BOX_MARKS = (BOX_MARKS[0], BOX_MARKS[1])
 
