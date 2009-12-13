@@ -8,10 +8,10 @@ PUSH_COST = 0
 MOVE_COST = 1
 
 SHIFTS = [
-        (0,-1),
-        (1,0),
-        (0,1),
         (-1,0),
+        (1,0),
+        (0,-1),
+        (0,1),
         ]
 
 WALKABLE_MARKS = EMPTY_MARKS + TARGET_MARKS
