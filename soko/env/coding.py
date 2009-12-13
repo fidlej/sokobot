@@ -1,14 +1,14 @@
 
-PLAYER_MARKS = "@+xX"
+PLAYER_MARKS = "@+"
 WALL_MARKS = "#"
-TARGET_MARKS = ".+*/XOG"
-BOX_MARKS = "$*oO"
+TARGET_MARKS = ".+*"
+BOX_MARKS = "$*"
 EMPTY_MARKS = " "
 
-# Different format marks are supported:
-# @,x ... player
-# $,o ... box
-# .,/,G ... goal
-# +,X ... player on a goal
-# *,O ... box on a goal
+# Legend:
+# @ ... player
+# $ ... box
+# . ... goal
+# + ... player on a goal
+# * ... box on a goal
 
