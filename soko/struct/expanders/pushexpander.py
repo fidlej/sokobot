@@ -20,18 +20,18 @@ class PushExpander(object):
         """
         actions = []
         maze = Maze(s)
-        (pos,) = maze.find_all_positions(PLAYER_MARKS)
-        man_mark = maze.get(pos)
-        for shift in SHIFTS:
-            new_pos = v2.sum(pos, shift)
-            cell = maze.get(new_pos)
-            if cell in EMPTY_MARKS:
-                actions.append(_action_move(maze, pos, new_pos))
-            elif cell in BOX_MARKS:
-                behind_new_pos = v2.sum(new_pos, shift)
-                if maze.get(behind_new_pos) in EMPTY_MARKS:
-                    actions.append(_action_push(
-                        maze, pos, new_pos, behind_new_pos))
+        man_positions = maze.find_all_positions(PLAYER_MARKS)
+        for pos in man_positions:
+            for shift in SHIFTS:
+                new_pos = v2.sum(pos, shift)
+                cell = maze.get(new_pos)
+                if cell in EMPTY_MARKS:
+                    actions.append(_action_move(maze, pos, new_pos))
+                elif cell in BOX_MARKS:
+                    behind_new_pos = v2.sum(new_pos, shift)
+                    if maze.get(behind_new_pos) in EMPTY_MARKS:
+                        actions.append(_action_push(
+                            maze, pos, new_pos, behind_new_pos))
 
         return actions
 

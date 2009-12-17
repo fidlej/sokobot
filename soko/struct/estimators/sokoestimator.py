@@ -24,7 +24,6 @@ class SokoEnvSokoEstimator(object):
         self.env = SokobanEnv(maze)
 
     def estim_cost(self, s):
-        (pos,) = Maze(s).find_all_positions(PLAYER_MARKS)
         boxes = Maze(s).find_all_positions(BOX_MARKS)
-        env_s = (pos, boxes)
+        env_s = (None, boxes)
         return self.env.estim_cost(env_s)
