@@ -61,22 +61,45 @@ def _recognize_gates(s):
     return [((0,0), gate)]
 
 def _report_seen_context(s):
-    RADIUS = 3
+    """Prints all seen NxM local views.
+    """
+    DX = 5
+    DY = 5
     from soko.mazing import Maze
     from soko.env.coding import PLAYER_MARKS
     maze = Maze(s)
     man_positions = maze.find_all_positions(PLAYER_MARKS)
 
+    separator = "=" * DX
     for pos in man_positions:
-        context = []
         x, y = pos
-        for row in _slice_around(s, y, RADIUS):
-            context.append(_slice_around(row, x, RADIUS))
+        for rows_view in _get_shifted_views(s, y, DY):
+            # The row_cols_views contains a list of col views
+            # for each row.
+            row_cols_views = [_get_shifted_views(row, x, DX)
+                    for row in rows_view]
 
-        print "=" * (2 * RADIUS + 1)
-        print Maze(context)
+            # A context is a set of col views from all rows.
+            for context in zip(*row_cols_views):
+                print separator
+                print Maze(context)
 
-def _slice_around(array, index, radius):
-    start = max(0, index - radius)
-    end = max(0, index + radius)
-    return array[start:end+1]
+def _get_shifted_views(array, index, diameter):
+    """Returns all slices with the given diameter.
+    They have to contain the given index on a non-border position:
+    i.e., on positions 1 to (slice_len - 2).
+    """
+    items = []
+    for shift in xrange(1, (diameter - 2) + 1):
+        start = index - shift
+        end = index - shift + diameter - 1
+        if start < 0:
+            continue
+        if end >= len(array):
+            continue
+
+        slice = array[start:end+1]
+        assert len(slice) == diameter
+        items.append(slice)
+    return items
+
