@@ -79,7 +79,7 @@ def _report_seen_context(s):
             row_cols_views = [_get_shifted_views(row, x, DX)
                     for row in rows_view]
 
-            # A context is a set of col views from all rows.
+            # A context is a set of cols views from all rows.
             for context in zip(*row_cols_views):
                 print separator
                 print Maze(context)
