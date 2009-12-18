@@ -53,9 +53,30 @@ def _recognize_gates(s):
     """Returns a list (pos, gate) pairs.
     They are the recognized the local aggregate states and theirs positions.
     """
+    _report_seen_context(s)
     #TODO: implement a recognition of the gates
     from soko.struct.expanders.pushexpander import PushExpander
     expander = PushExpander()
     gate = Gate(expander.get_actions(s))
     return [((0,0), gate)]
 
+def _report_seen_context(s):
+    RADIUS = 3
+    from soko.mazing import Maze
+    from soko.env.coding import PLAYER_MARKS
+    maze = Maze(s)
+    man_positions = maze.find_all_positions(PLAYER_MARKS)
+
+    for pos in man_positions:
+        context = []
+        x, y = pos
+        for row in _slice_around(s, y, RADIUS):
+            context.append(_slice_around(row, x, RADIUS))
+
+        print "=" * (2 * RADIUS + 1)
+        print Maze(context)
+
+def _slice_around(array, index, radius):
+    start = max(0, index - radius)
+    end = max(0, index + radius)
+    return array[start:end+1]
