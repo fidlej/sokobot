@@ -3,6 +3,8 @@ from soko.struct import modeling
 from soko.env.env import Action
 from pylib import v2
 
+UNKNOWN_MARK = "%"
+
 class AggregateExpander(object):
     def get_actions(self, s):
         actions = []
@@ -70,22 +72,22 @@ def _report_seen_context(s):
     maze = Maze(s)
     man_positions = maze.find_all_positions(PLAYER_MARKS)
 
+    unknown_row = UNKNOWN_MARK * DX
     separator = "=" * DX
     for pos in man_positions:
         x, y = pos
-        for rows_view in _get_shifted_views(s, y, DY):
+        for rows_view in _get_shifted_views(s, y, DY, unknown_row):
             # The row_cols_views contains a list of col views
             # for each row.
-            #TODO: allow the rows to have different lengths
-            row_cols_views = [_get_shifted_views(row, x, DX)
-                    for row in rows_view]
+            row_cols_views = [_get_shifted_views(row, x, DX, UNKNOWN_MARK)
+                    for row in rows_view if row]
 
             # A context is a set of cols views from all rows.
             for context in zip(*row_cols_views):
                 print separator
                 print Maze(context)
 
-def _get_shifted_views(array, index, diameter):
+def _get_shifted_views(array, index, diameter, unknown_value=None):
     """Returns all slices with the given diameter.
     They have to contain the given index on a non-border position:
     i.e., on positions 1 to (slice_len - 2).
@@ -95,12 +97,14 @@ def _get_shifted_views(array, index, diameter):
         start = index - shift
         end = index - shift + diameter - 1
         if start < 0:
-            continue
-        if end >= len(array):
-            continue
-
-        slice = array[start:end+1]
-        assert len(slice) == diameter
+            slice = list(array[0:end+1])
+            slice = [unknown_value] * (diameter - len(slice)) + slice
+        elif end >= len(array):
+            slice = list(array[start:len(array)])
+            slice += [unknown_value] * (diameter - len(slice))
+        else:
+            slice = array[start:end+1]
+            assert len(slice) == diameter
         items.append(slice)
     return items
 
