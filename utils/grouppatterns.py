@@ -19,7 +19,7 @@ def _read_patterns(input):
 
         if len(lines) == pattern_h or (pattern_h is None and line == separator):
             pattern_h = len(lines)
-            patterns.append(lines)
+            patterns.append(tuple(lines))
             lines = []
 
     return patterns
@@ -34,7 +34,10 @@ def _group_by(patterns, key):
 
 def _get_end_states(pattern):
     #TODO: implement
-    return tuple(tuple(line) for line in pattern)
+    return pattern
+
+def _filter_duplicates(patterns):
+    return list(set(patterns))
 
 def main():
     args = sys.argv[1:]
@@ -44,6 +47,7 @@ def main():
 
     filename = args[0]
     patterns = _read_patterns(open(filename))
+    patterns = _filter_duplicates(patterns)
     groups = _group_by(patterns, key=_get_end_states)
     for key, value in groups.iteritems():
         print len(value)
