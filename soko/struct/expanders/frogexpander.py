@@ -1,3 +1,7 @@
+"""
+A maze based on the Spanish flag puzzle with frogs.
+http://funstufftosee.com/frogleaptest.html
+"""
 
 from soko.mazing import Maze
 from soko.env.env import Action
