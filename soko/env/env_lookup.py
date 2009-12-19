@@ -5,7 +5,8 @@ from soko.env.pathfinder import PathFinderEnv
 from soko.env.pusherenv import PusherEnv, SokobanEnv
 from soko.env.fillets import FilletsEnv
 from soko.env.npuzzle import PuzzleEnv
-from soko.struct.glue import EnvGlue as SokobanEnv
+from soko.struct.glue import EnvGlue
+SokobanEnv = EnvGlue
 
 ENVS = dict(
         finder=PathFinderEnv,
@@ -16,6 +17,7 @@ ENVS = dict(
         xsokoban=SokobanEnv,
         fillets=FilletsEnv,
         npuzzle=PuzzleEnv,
+        frogs=EnvGlue,
         )
 
 def create_env(level_filename, call_counter=None):
