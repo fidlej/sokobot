@@ -76,6 +76,7 @@ def _report_seen_context(s):
         for rows_view in _get_shifted_views(s, y, DY):
             # The row_cols_views contains a list of col views
             # for each row.
+            #TODO: allow the rows to have different lengths
             row_cols_views = [_get_shifted_views(row, x, DX)
                     for row in rows_view]
 

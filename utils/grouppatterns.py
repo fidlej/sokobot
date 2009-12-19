@@ -4,6 +4,7 @@ Groups patterns with the same end states together.
 """
 
 import sys
+import pprint
 
 def _read_patterns(input):
     patterns = []
@@ -23,6 +24,18 @@ def _read_patterns(input):
 
     return patterns
 
+def _group_by(patterns, key):
+    groups = {}
+    for pattern in patterns:
+        k = key(pattern)
+        groups.setdefault(k, []).append(pattern)
+
+    return groups
+
+def _get_end_states(pattern):
+    #TODO: implement
+    return tuple(tuple(line) for line in pattern)
+
 def main():
     args = sys.argv[1:]
     if len(args) != 1:
@@ -31,8 +44,8 @@ def main():
 
     filename = args[0]
     patterns = _read_patterns(open(filename))
-    print len(patterns)
-    import pprint
-    pprint.pprint(patterns[:8])
+    groups = _group_by(patterns, key=_get_end_states)
+    for key, value in groups.iteritems():
+        print len(value)
 
 main()
