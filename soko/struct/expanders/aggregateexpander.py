@@ -98,13 +98,14 @@ def _get_shifted_views(array, index, diameter, unknown_value=None):
         end = index - shift + diameter - 1
         if start < 0:
             slice = list(array[0:end+1])
-            slice = [unknown_value] * (diameter - len(slice)) + slice
-        elif end >= len(array):
-            slice = list(array[start:len(array)])
-            slice += [unknown_value] * (diameter - len(slice))
+            slice = [unknown_value] * -start + slice
         else:
-            slice = array[start:end+1]
-            assert len(slice) == diameter
+            slice = list(array[start:end+1])
+
+        if end >= len(array):
+            slice += [unknown_value] * (diameter - len(slice))
+
+        assert len(slice) == diameter
         items.append(slice)
     return items
 
