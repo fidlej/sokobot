@@ -38,6 +38,7 @@ class PushRule(object):
         maze = Maze(s, border=UNKNOWN_MARK)
         positions = maze.find_all_positions(PLAYER_MARKS)
         for pos in positions:
+            used_cells.add(pos)
             for shift in SHIFTS:
                 next_pos = v2.sum(pos, shift)
                 used_cells.add(next_pos)
