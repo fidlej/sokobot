@@ -6,22 +6,22 @@ def extract_state(maze):
     """Extract the initial state from the maze.
     """
     field = maze.render_maze()
-    return _immutablize(field)
+    return immutablize(field)
 
 def predict(s, a):
     """Returns the next state.
     """
-    next_s = _mutablize(s)
+    next_s = mutablize(s)
     for pos, mark in a.get_cmd():
         x, y = pos
         next_s[y][x] = mark
 
-    return _immutablize(next_s)
+    return immutablize(next_s)
 
-def _immutablize(field):
+def immutablize(field):
     return tuple(tuple(line) for line in field)
 
-def _mutablize(field):
+def mutablize(field):
     return list(list(line) for line in field)
 
 
