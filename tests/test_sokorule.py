@@ -8,7 +8,7 @@ def test_get_children():
     rule = PushRule()
     s = (
             "#   #",
-            " @ .#",
+            "#@ .#",
             " $  #",
             "    #",
             "#####",
@@ -16,31 +16,24 @@ def test_get_children():
 
     used_cells = set()
     children = rule.get_children(s, used_cells)
-    assert_equal(4, len(children))
+    assert_equal(3, len(children))
     _assert_contains(children,
             ("#   #",
-            "  @.#",
-            " $  #",
-            "    #",
-            "#####",
-            ))
-    _assert_contains(children,
-            ("#   #",
-            "@  .#",
+            "# @.#",
             " $  #",
             "    #",
             "#####",
             ))
     _assert_contains(children,
             ("#@  #",
-            "   .#",
+            "#  .#",
             " $  #",
             "    #",
             "#####",
             ))
     _assert_contains(children,
             ("#   #",
-            "   .#",
+            "#  .#",
             " @  #",
             " $  #",
             "#####",
