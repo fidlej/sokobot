@@ -12,3 +12,6 @@ EMPTY_MARKS = " ."
 # + ... player on a goal
 # * ... box on a goal
 
+# A marker for an unknown value in a pattern.
+UNKNOWN_MARK = "%"
+

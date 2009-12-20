@@ -1,9 +1,8 @@
 
 from soko.struct import modeling
 from soko.env.env import Action
+from soko.env.coding import UNKNOWN_MARK
 from pylib import v2
-
-UNKNOWN_MARK = "%"
 
 class AggregateExpander(object):
     def get_actions(self, s):

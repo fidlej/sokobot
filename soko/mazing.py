@@ -3,12 +3,18 @@ class Maze(object):
     """An immutable maze info.
     """
 
-    def __init__(self, field):
+    def __init__(self, field, border=None):
         self.field = field
+        self.border = border
 
     def get(self, pos):
         x, y = pos
-        return self.field[y][x]
+        try:
+            return self.field[y][x]
+        except IndexError:
+            if self.border is not None:
+                return self.border
+            raise
 
     def find_positions(self, mark):
         """Returns all positions of the given mark in the maze.
