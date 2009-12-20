@@ -17,11 +17,11 @@ def test_get_children():
     assert_equal(6, len(end_states))
 
     assert_equal(_parse_field("""\
-%   %
+?   ?
  $ .#
    @#
     #
-%###%"""), preproc.generalize(s, used_cells))
+?###?"""), preproc.generalize(s, used_cells))
 
 
 def _parse_field(input):

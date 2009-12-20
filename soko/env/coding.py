@@ -13,5 +13,5 @@ EMPTY_MARKS = " ."
 # * ... box on a goal
 
 # A marker for an unknown value in a pattern.
-UNKNOWN_MARK = "%"
+UNKNOWN_MARK = "?"
 
