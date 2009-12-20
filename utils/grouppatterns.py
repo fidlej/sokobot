@@ -7,6 +7,7 @@ import sys
 import pprint
 
 import sokopath
+from soko.mazing import Maze
 from soko.struct.rules.sokorule import SOKOBAN_RULES
 
 def _read_patterns(input):
@@ -40,14 +41,23 @@ def _get_end_states(pattern):
     # based on the env that generated the patterns.
     rules = SOKOBAN_RULES
 
-    s = pattern
+    end_states = []
     used_cells = set()
-    children = _get_children(rules, s, used_cells)
-    if children is None:
-        children = [s]
+    seen = set([pattern])
+    queue = [pattern]
+    while queue:
+        s = queue.pop(-1)
+        children = _get_children(rules, s, used_cells)
+        if children is None:
+            end_states.append(s)
+        else:
+            for child in children:
+                if child not in seen:
+                    seen.add(child)
+                    queue.append(child)
 
-    #TODO: do a breath-first till all end states.
-    return tuple(children)
+    #TODO: Generalize the pattern. Keep just the used cells in it.
+    return tuple(end_states)
 
 def _get_children(rules, s, used_cells):
     """Returns a list of children or None
@@ -80,8 +90,15 @@ def main():
     patterns = _filter_duplicates(patterns)
     groups = _group_by(patterns, key=_get_end_states)
 
-    print "DEBUG: some pattern groups:"
-    for key, value in groups.items()[:8]:
-        print len(key), len(value)
+    num_key_pairs = [(len(patterns), key) for key, patterns in groups.iteritems()]
+    num_key_pairs.sort(reverse=True)
+    N = 8
+    print "DEBUG: top %s items:" % N
+    for num_patterns, end_states in num_key_pairs[:N]:
+        print num_patterns, len(end_states)
+        print Maze(groups[end_states][0])
+        print "=" * 5
+        print Maze(groups[end_states][1])
+        print "=" * 5
 
 main()
