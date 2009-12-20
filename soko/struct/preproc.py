@@ -1,4 +1,7 @@
 
+from soko.env.coding import UNKNOWN_MARK
+from soko.struct import modeling
+
 def detect_end_states(pattern, rules):
     """Returns a (end_states, used_cells) pair
     with the end states for the pattern
@@ -20,6 +23,18 @@ def detect_end_states(pattern, rules):
                     queue.append(child)
 
     return end_states, used_cells
+
+def generalize(pattern, used_cells):
+    """Erases the unsed positions.
+    """
+    new_pattern = modeling.mutablize(pattern)
+    for y, row in enumerate(pattern):
+        for x in xrange(len(row)):
+            pos = (x, y)
+            if pos not in used_cells:
+                new_pattern[y][x] = UNKNOWN_MARK
+
+    return modeling.immutablize(new_pattern)
 
 def _get_children(rules, s, used_cells):
     """Returns a list of children or None

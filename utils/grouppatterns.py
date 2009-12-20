@@ -42,7 +42,8 @@ def _get_end_states(pattern):
     rules = SOKOBAN_RULES
     end_states, used_cells = preproc.detect_end_states(pattern, rules)
 
-    #TODO: Generalize the pattern. Keep just the used cells in it.
+    #TODO: Generalize also the pattern. Keep just the used cells in it.
+    end_states = set(preproc.generalize(s, used_cells) for s in end_states)
     return tuple(end_states)
 
 def _filter_duplicates(patterns):
@@ -65,9 +66,9 @@ def main():
     print "DEBUG: top %s items:" % N
     for num_patterns, end_states in num_key_pairs[:N]:
         print num_patterns, len(end_states)
-        print Maze(groups[end_states][0])
+        print Maze(end_states[0])
         print "=" * 5
-        print Maze(groups[end_states][1])
+        print Maze(groups[end_states][0])
         print "=" * 5
 
 main()
