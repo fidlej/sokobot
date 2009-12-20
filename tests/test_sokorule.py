@@ -53,6 +53,19 @@ def test_get_children():
             "#####",
         )), modeling.immutablize(used_s))
 
+def test_get_children_from_end_state():
+    s = modeling.immutablize("""\
+#$  #
+ @ .#
+    #
+    #
+#####""".splitlines())
+    rule = PushRule()
+    used_cells = set()
+    children = rule.get_children(s, used_cells)
+    assert_equal(None, children)
+    assert_equal(set(), used_cells)
+
 def _assert_contains(childern, s):
     s = modeling.immutablize(s)
     assert s in childern

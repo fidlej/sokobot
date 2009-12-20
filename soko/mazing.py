@@ -9,12 +9,13 @@ class Maze(object):
 
     def get(self, pos):
         x, y = pos
-        try:
-            return self.field[y][x]
-        except IndexError:
-            if self.border is not None:
+        if self.border is not None:
+            if not 0 <= y < len(self.field):
                 return self.border
-            raise
+            if not 0 <= x < len(self.field[y]):
+                return self.border
+
+        return self.field[y][x]
 
     def find_positions(self, mark):
         """Returns all positions of the given mark in the maze.
