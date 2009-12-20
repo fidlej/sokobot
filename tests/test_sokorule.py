@@ -8,7 +8,7 @@ def test_get_children():
     rule = PushRule()
     s = (
             "#   #",
-            "#@ .#",
+            "#@. #",
             " $  #",
             "    #",
             "#####",
@@ -19,21 +19,21 @@ def test_get_children():
     assert_equal(3, len(children))
     _assert_contains(children,
             ("#   #",
-            "# @.#",
+            "# + #",
             " $  #",
             "    #",
             "#####",
             ))
     _assert_contains(children,
             ("#@  #",
-            "#  .#",
+            "# . #",
             " $  #",
             "    #",
             "#####",
             ))
     _assert_contains(children,
             ("#   #",
-            "#  .#",
+            "# . #",
             " @  #",
             " $  #",
             "#####",
@@ -47,7 +47,7 @@ def test_get_children():
     assert_equal(modeling.immutablize(
         (
             "#!  #",
-            "!!!.#",
+            "!!! #",
             " !  #",
             " !  #",
             "#####",
