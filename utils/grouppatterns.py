@@ -47,7 +47,6 @@ def _get_generalized(pattern):
     rules = SOKOBAN_RULES
     end_states, used_cells = preproc.detect_end_states(pattern, rules)
 
-    #TODO: Generalize also the pattern. Keep just the used cells in it.
     end_states = set(preproc.generalize(s, used_cells) for s in end_states)
     pattern = preproc.generalize(pattern, used_cells)
     return pattern, tuple(end_states)
