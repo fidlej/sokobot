@@ -4,6 +4,7 @@ Groups patterns with the same end states together.
 """
 
 import sys
+import operator
 
 import sokopath
 from soko.mazing import Maze
@@ -28,15 +29,19 @@ def _read_patterns(input):
 
     return patterns
 
-def _group_by(patterns, key):
+def _group_by_end_states(pattern_end_states):
     groups = {}
-    for pattern in patterns:
-        k = key(pattern)
-        groups.setdefault(k, []).append(pattern)
+    for pattern, end_states in pattern_end_states:
+        groups.setdefault(end_states, []).append(pattern)
 
     return groups
 
-def _get_end_states(pattern):
+def _generalize_with_end_states(patterns):
+    return [_get_generalized(p) for p in patterns]
+
+def _get_generalized(pattern):
+    """Returns (generalized_pattern, end_states) pair.
+    """
     #TODO: allow to specify the set of rules
     # based on the env that generated the patterns.
     rules = SOKOBAN_RULES
@@ -44,7 +49,8 @@ def _get_end_states(pattern):
 
     #TODO: Generalize also the pattern. Keep just the used cells in it.
     end_states = set(preproc.generalize(s, used_cells) for s in end_states)
-    return tuple(end_states)
+    pattern = preproc.generalize(pattern, used_cells)
+    return pattern, tuple(end_states)
 
 def _filter_duplicates(patterns):
     return list(set(patterns))
@@ -58,7 +64,9 @@ def main():
     filename = args[0]
     patterns = _read_patterns(open(filename))
     patterns = _filter_duplicates(patterns)
-    groups = _group_by(patterns, key=_get_end_states)
+    pattern_end_states = _generalize_with_end_states(patterns)
+    pattern_end_states = _filter_duplicates(pattern_end_states)
+    groups = _group_by_end_states(pattern_end_states)
 
     num_key_pairs = [(len(patterns), key) for key, patterns in groups.iteritems()]
     num_key_pairs.sort(reverse=True)
