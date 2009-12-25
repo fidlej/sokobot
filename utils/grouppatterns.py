@@ -4,7 +4,6 @@ Groups patterns with the same end states together.
 """
 
 import sys
-import operator
 
 import sokopath
 from soko.mazing import Maze
@@ -54,6 +53,23 @@ def _get_generalized(pattern):
 def _filter_duplicates(patterns):
     return list(set(patterns))
 
+def _show_promising_groups(groups):
+    def fitness(group):
+        end_states, patterns = group
+        io_rate = len(patterns) / float(len(end_states))
+        return (io_rate, len(patterns))
+
+    N = 8
+    items = groups.items()
+    items.sort(key=fitness, reverse=True)
+    print "DEBUG: top %s items:" % N
+    for end_states, patterns in items[:N]:
+        print len(patterns), len(end_states)
+        print Maze(end_states[0])
+        print "=" * 5
+        print Maze(patterns[0])
+        print "=" * 5
+
 def main():
     args = sys.argv[1:]
     if len(args) != 1:
@@ -67,15 +83,6 @@ def main():
     pattern_end_states = _filter_duplicates(pattern_end_states)
     groups = _group_by_end_states(pattern_end_states)
 
-    num_key_pairs = [(len(patterns), key) for key, patterns in groups.iteritems()]
-    num_key_pairs.sort(reverse=True)
-    N = 8
-    print "DEBUG: top %s items:" % N
-    for num_patterns, end_states in num_key_pairs[:N]:
-        print num_patterns, len(end_states)
-        print Maze(end_states[0])
-        print "=" * 5
-        print Maze(groups[end_states][0])
-        print "=" * 5
+    _show_promising_groups(groups)
 
 main()
