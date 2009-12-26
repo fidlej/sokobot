@@ -1,15 +1,26 @@
 
 from soko.struct import modeling
+from soko.struct.recognizing import PatternRecognizer
 from soko.struct.fakerecognizing import ExpanderBasedRecognizer
 from soko.env.env import Action
 from pylib import v2
 
+def _get_fake_recognizer():
+    #TODO: allow to configure the used low_level_expander
+    from soko.struct.expanders.pushexpander import PushExpander
+    low_level_expander = PushExpander()
+    return ExpanderBasedRecognizer(low_level_expander)
+
+def _get_pattern_recognizer():
+    import cPickle as pickle
+    patterns = pickle.load("../export/patterns/sokoban2.pickle")
+    return PatternRecognizer(patterns)
+
 class AggregateExpander(object):
     def __init__(self):
-        #TODO: allow to configure the used low_level_expander
-        from soko.struct.expanders.pushexpander import PushExpander
-        low_level_expander = PushExpander()
-        self.recognizer = ExpanderBasedRecognizer(low_level_expander)
+        #TODO: allow to pass in or configure the used recognizer
+        #self.recognizer = _get_pattern_recognizer()
+        self.recognizer = _get_fake_recognizer()
 
     def get_actions(self, s):
         actions = []

@@ -1,24 +1,12 @@
 
 from soko.env.coding import UNKNOWN_MARK
-
-class Gate(object):
-    """A represetation of an local aggregate state.
-    """
-    def __init__(self, end_states):
-        self.end_states = end_states
-    def get_end_states(self):
-        """Returns the end states from this gate.
-        They are represented as actions relative to the gate position.
-        """
-        return self.end_states
-
+from soko.struct.recognizing import Gate
 
 class ExpanderBasedRecognizer(object):
     def __init__(self, expander):
         self.expander = expander
     def recognize_gates(self, s):
-        """Returns a list (pos, gate) pairs.
-        They are the recognized the local aggregate states and theirs positions.
+        """Returns a list of (pos, gate) pairs.
         """
         _report_seen_context(s)
         gate = Gate(self.expander.get_actions(s))
