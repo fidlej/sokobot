@@ -1,7 +1,7 @@
 
 from nose.tools import assert_equal
 
-from soko.struct.rules.sokorule import PushRule
+from soko.struct.rules.sokorule import PushRule, SokobanGoalRule
 from soko.struct import modeling
 
 def test_get_children():
@@ -65,6 +65,26 @@ def test_get_children_from_end_state():
     children = rule.get_children(s, used_cells)
     assert_equal(None, children)
     assert_equal(set(), used_cells)
+
+def test_is_goaling():
+    rule = SokobanGoalRule()
+    s = (
+            "#   #",
+            "#  .#",
+            "   $#",
+            "   @#",
+            "#####",
+            )
+    next_s = (
+            "#   #",
+            "#  *#",
+            "   @#",
+            "    #",
+            "#####",
+            )
+    assert_equal(True, rule.is_goaling(s, next_s))
+    assert_equal(False, rule.is_goaling(next_s, s))
+    assert_equal(False, rule.is_goaling(next_s, next_s))
 
 def _assert_contains(childern, s):
     s = modeling.immutablize(s)
