@@ -1,5 +1,5 @@
 
-from soko.env.coding import PLAYER_MARKS, BOX_MARKS, UNKNOWN_MARK
+from soko.env.coding import PLAYER_MARKS, BOX_MARKS, TARGET_MARKS, UNKNOWN_MARK
 from soko.struct.expanders.pushexpander import PushExpander, SHIFTS
 from soko.struct import modeling
 from soko.mazing import Maze
@@ -30,6 +30,9 @@ class PushRule(object):
         used_cells.update(local_used_cells)
         return children
 
+    def is_goaling(self, s, next_s):
+        return False
+
     def _get_used_cells(self, s):
         """Returns positions that are needed
         to decide if the actions are applicable in the state.
@@ -49,8 +52,35 @@ class PushRule(object):
         return used_cells
 
 
+class SokobanGoalRule(object):
+    def get_children(self, s, used_cells):
+        return ()
+
+    def is_goaling(self, s, next_s):
+        """Detects if the transition leads to
+        a possible part of the global goal.
+        """
+        return (self._is_local_goal(next_s)
+                and not self._is_local_goal(s))
+
+    def _is_local_goal(self, s):
+        """Returns true if all visible boxes
+        are on all visible targets.
+        """
+        maze = Maze(s)
+        boxes = maze.find_all_positions(BOX_MARKS)
+        targets = maze.find_all_positions(TARGET_MARKS)
+        if len(boxes) != len(targets):
+            return False
+
+        for box in boxes:
+            if maze.get(box) not in targets:
+                return False
+
+        print "TEST: True"
+        return True
+
 SOKOBAN_RULES = [
         PushRule(),
-        #TODO: implement the SokobanGoalRule
-        #SokobanGoalRule(),
+        SokobanGoalRule(),
         ]

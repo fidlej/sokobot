@@ -20,7 +20,10 @@ def detect_end_states(pattern, rules):
             for child in children:
                 if child not in seen:
                     seen.add(child)
-                    queue.append(child)
+                    if _is_goaling(rules, s, child):
+                        end_states.append(child)
+                    else:
+                        queue.append(child)
 
     return end_states, used_cells
 
@@ -52,4 +55,14 @@ def _get_children(rules, s, used_cells):
 
     used_cells.update(local_used_cells)
     return children
+
+def _is_goaling(rules, s, child):
+    """Returns true if the transition leads
+    to a possible part of a global goal state.
+    """
+    for rule in rules:
+        if rule.is_goaling(s, child):
+            return True
+
+    return False
 
