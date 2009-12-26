@@ -47,7 +47,8 @@ def _get_generalized(pattern):
     end_states, used_cells = preproc.detect_end_states(pattern, rules)
 
     pattern = preproc.generalize(pattern, used_cells)
-    end_states = set(preproc.generalize(s, used_cells) for s in end_states)
+    new_end_states = set(preproc.generalize(s, used_cells) for s in end_states)
+    assert new_end_states == end_states
     return pattern, tuple(end_states)
 
 def _filter_duplicates(patterns):

@@ -15,6 +15,13 @@ def test_get_children():
 
     end_states, used_cells = preproc.detect_end_states(s, rules)
     assert_equal(6, len(end_states))
+    end_states.sort()
+    assert_equal(_parse_field("""\
+#   #
+ $ .#
+    #
+@   #
+#####"""), end_states[0])
 
     assert_equal(_parse_field("""\
 ?   ?
