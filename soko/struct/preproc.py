@@ -28,7 +28,7 @@ def detect_end_states(pattern, rules):
     return end_states, used_cells
 
 def generalize(pattern, used_cells):
-    """Erases the unsed positions.
+    """Erases the unused positions.
     """
     new_pattern = modeling.mutablize(pattern)
     for y, row in enumerate(pattern):
