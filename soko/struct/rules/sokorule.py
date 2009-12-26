@@ -77,7 +77,6 @@ class SokobanGoalRule(object):
             if maze.get(box) not in targets:
                 return False
 
-        print "TEST: True"
         return True
 
 SOKOBAN_RULES = [
