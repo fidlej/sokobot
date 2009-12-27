@@ -27,8 +27,9 @@ class Gate(object):
 
 
 class PatternRecognizer(object):
-    def __init__(self, endings):
+    def __init__(self, endings, fallback_recognizer):
         self.endings = endings
+        self.fallback_recognizer = fallback_recognizer
 
     def recognize_gates(self, s):
         """Returns a list of (pos, gate) pairs.
@@ -39,14 +40,22 @@ class PatternRecognizer(object):
         positions = maze.find_all_positions(PLAYER_MARKS)
         gates = []
         for pos in positions:
-            #TODO: Allow the local state to be uknown.
             shifted_gate = self._find_gate(maze, pos)
+            if shifted_gate is None:
+                return self.fallback_recognizer.recognize_gates(s)
+
             gates.append(shifted_gate)
 
         return gates
 
     def _find_gate(self, maze, pos):
-        shift, ending = self._find_ending(maze, pos)
+        """Returns a known matching gate or None.
+        """
+        shifted_ending = self._find_ending(maze, pos)
+        if shifted_ending is None:
+            return None
+
+        shift, ending = shifted_ending
         end_states, patterns = ending
         return (shift, Gate(end_states,
             self._choose_normalizing_pattern(patterns)))
@@ -59,6 +68,7 @@ class PatternRecognizer(object):
     def _find_ending(self, maze, pos):
         """Returns the ending matching the given
         maze with the given focus position.
+        It returns None when no known pattern is matching the maze.
         The patterns are tested in their predefined order.
         """
         for ending in self.endings:
@@ -71,10 +81,7 @@ class PatternRecognizer(object):
                     if _is_matching(shift, pattern, maze):
                         return (shift, ending)
 
-        #TODO: report the unseen patterns
-        return ((0,0), ((), ()))
-        print maze
-        assert None is "Impossible for now."
+        return None
 
 def _is_matching(shift, pattern, maze):
     for y, row in enumerate(pattern):

@@ -6,22 +6,22 @@ from soko.env.env import Action
 from soko.env.coding import UNKNOWN_MARK
 from pylib import v2
 
-def _get_fake_recognizer():
+def _get_low_level_recognizer():
     #TODO: allow to configure the used low_level_expander
     from soko.struct.expanders.pushexpander import PushExpander
     low_level_expander = PushExpander()
     return ExpanderBasedRecognizer(low_level_expander)
 
-def _get_pattern_recognizer():
+def _get_pattern_recognizer(fallback_recognizer):
     import cPickle as pickle
     endings = pickle.load(open("../export/endings/sokoban2.pickle"))
-    return PatternRecognizer(endings)
+    return PatternRecognizer(endings, fallback_recognizer)
 
 class AggregateExpander(object):
     def __init__(self):
         #TODO: allow to pass in or configure the used recognizer
-        #self.recognizer = _get_fake_recognizer()
-        self.recognizer = _get_pattern_recognizer()
+        low_level_recognizer = _get_low_level_recognizer()
+        self.recognizer = _get_pattern_recognizer(low_level_recognizer)
 
     def get_actions(self, s):
         actions = []
