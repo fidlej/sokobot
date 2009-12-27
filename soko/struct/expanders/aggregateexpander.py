@@ -13,14 +13,14 @@ def _get_fake_recognizer():
 
 def _get_pattern_recognizer():
     import cPickle as pickle
-    patterns = pickle.load("../export/patterns/sokoban2.pickle")
-    return PatternRecognizer(patterns)
+    endings = pickle.load(open("../export/endings/sokoban2.pickle"))
+    return PatternRecognizer(endings)
 
 class AggregateExpander(object):
     def __init__(self):
         #TODO: allow to pass in or configure the used recognizer
-        #self.recognizer = _get_pattern_recognizer()
-        self.recognizer = _get_fake_recognizer()
+        #self.recognizer = _get_fake_recognizer()
+        self.recognizer = _get_pattern_recognizer()
 
     def get_actions(self, s):
         actions = []

@@ -6,7 +6,7 @@ from soko.struct import modeling, preproc
 
 def test_get_children():
     rules = [PushRule()]
-    s = _parse_field("""\
+    s = parse_field("""\
 #   #
  $ .#
    @#
@@ -16,14 +16,14 @@ def test_get_children():
     end_states, used_cells = preproc.detect_end_states(s, rules)
     assert_equal(6, len(end_states))
     end_states.sort()
-    assert_equal(_parse_field("""\
+    assert_equal(parse_field("""\
 #   #
  $ .#
     #
 @   #
 #####"""), end_states[0])
 
-    assert_equal(_parse_field("""\
+    assert_equal(parse_field("""\
 ?   ?
  $ .#
    @#
@@ -31,7 +31,7 @@ def test_get_children():
 ?###?"""), preproc.generalize(s, used_cells))
 
 
-def _parse_field(input):
+def parse_field(input):
     lines = input.splitlines()
     return  modeling.immutablize(lines)
 
