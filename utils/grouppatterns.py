@@ -72,7 +72,7 @@ def _sort_by_fitness(endings):
 def _show_top_endings(endings, top=8):
     print "DEBUG: top %s endings:" % top
     for end_states, patterns in endings[:top]:
-        print len(patterns), len(end_states)
+        print "%s/%s" % (len(patterns), len(end_states))
         print Maze(end_states[0])
         print "=" * 5
         print Maze(patterns[0])
