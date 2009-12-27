@@ -39,9 +39,16 @@ class AggregateExpander(object):
         """Converts the patterns in the state
         to their normalized form.
         """
+        orig_s = s
         pos_gates = self.recognizer.recognize_gates(s)
         for pos, gate in pos_gates:
             s = _apply_end_state(s, pos, gate.get_norm_pattern())
+
+        # The normalization should not be too aggresive.
+        # It would prevent to go in some directions.
+        new_gates = self.recognizer.recognize_gates(s)
+        if new_gates != pos_gates:
+            return orig_s
         return s
 
 def _prepare_action(s, next_s, cost=1):
@@ -65,9 +72,4 @@ def _apply_end_state(s, shift, end_state):
                 next_s[y][x] = mark
 
     return next_s
-
-def _normalize_state(s):
-    #TODO: discover local aggregates
-    # and convert them to their normalized local state
-    return s
 

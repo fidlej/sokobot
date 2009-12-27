@@ -22,6 +22,9 @@ class Gate(object):
         """
         return self.end_states
 
+    def __eq__(self, other):
+        return self.end_states == other.end_states
+
 
 class PatternRecognizer(object):
     def __init__(self, endings):
