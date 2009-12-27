@@ -37,7 +37,7 @@ def _normalize_action(s, pos, end_state, cost=1):
     produce an equivalent normalized state.
     """
     next_s = _apply_end_state(s, pos, end_state)
-    _normalize_state(next_s)
+    next_s = _normalize_state(next_s)
     cmd = []
     for y, (row, next_row) in enumerate(zip(s, next_s)):
         for x, (cell, next_cell) in enumerate(zip(row, next_row)):
