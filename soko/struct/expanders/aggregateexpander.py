@@ -1,7 +1,7 @@
 
-from soko.struct import modeling
 from soko.struct.recognizing import PatternRecognizer
 from soko.struct.fakerecognizing import ExpanderBasedRecognizer
+from soko.struct import modeling
 from soko.env.env import Action
 from pylib import v2
 
@@ -19,28 +19,24 @@ def _get_pattern_recognizer():
 class AggregateExpander(object):
     def __init__(self):
         #TODO: allow to pass in or configure the used recognizer
-        #self.recognizer = _get_fake_recognizer()
-        self.recognizer = _get_pattern_recognizer()
+        self.recognizer = _get_fake_recognizer()
+        #self.recognizer = _get_pattern_recognizer()
 
     def get_actions(self, s):
         actions = []
         pos_gates = self.recognizer.recognize_gates(s)
         for pos, gate in pos_gates:
-            for local_action in gate.get_end_states():
-                a = _normalize_action(s, pos, local_action)
+            for end_state in gate.get_end_states():
+                a = _normalize_action(s, pos, end_state)
                 actions.append(a)
 
         return actions
 
-def _normalize_action(s, pos, local_action):
+def _normalize_action(s, pos, end_state, cost=1):
     """Returns action that would
     produce an equivalent normalized state.
     """
-    orig_cmd = [(v2.sum(pos, shift), value) for shift, value
-        in local_action.get_cmd()]
-    orig_action = Action(orig_cmd, local_action.get_cost())
-
-    next_s = modeling.predict(s, orig_action)
+    next_s = _apply_end_state(s, pos, end_state)
     _normalize_state(next_s)
     cmd = []
     for y, (row, next_row) in enumerate(zip(s, next_s)):
@@ -49,7 +45,16 @@ def _normalize_action(s, pos, local_action):
                 change_pos = (x,y)
                 cmd.append((change_pos, next_cell))
 
-    return Action(cmd, orig_action.get_cost())
+    return Action(cmd, cost)
+
+def _apply_end_state(s, shift, end_state):
+    next_s = modeling.mutablize(s)
+    for local_y, row in enumerate(end_state):
+        for local_x, mark in enumerate(row):
+            x, y = v2.sum(shift, (local_x,local_y))
+            next_s[y][x] = mark
+
+    return next_s
 
 def _normalize_state(s):
     #TODO: discover local aggregates

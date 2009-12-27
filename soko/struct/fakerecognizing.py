@@ -1,6 +1,7 @@
 
 from soko.env.coding import UNKNOWN_MARK
 from soko.struct.recognizing import Gate
+from soko.struct import modeling
 
 class ExpanderBasedRecognizer(object):
     def __init__(self, expander):
@@ -9,7 +10,13 @@ class ExpanderBasedRecognizer(object):
         """Returns a list of (pos, gate) pairs.
         """
         _report_seen_context(s)
-        gate = Gate(self.expander.get_actions(s))
+
+        end_states = []
+        for a in self.expander.get_actions(s):
+            next_s = modeling.predict(s, a)
+            end_states.append(next_s)
+
+        gate = Gate(end_states)
         return [((0,0), gate)]
 
 

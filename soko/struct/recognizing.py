@@ -29,8 +29,8 @@ class PatternRecognizer(object):
         gates = []
         for pos in positions:
             #TODO: Allow the local state to be uknown.
-            shift, gate = self._find_gate(maze, pos)
-            gates.append((shift, gate))
+            shifted_gate = self._find_gate(maze, pos)
+            gates.append(shifted_gate)
 
         return gates
 
