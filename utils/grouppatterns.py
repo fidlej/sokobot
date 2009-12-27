@@ -61,17 +61,17 @@ def _save_endings(endings, filename):
     disk.prepare_path(filename)
     pickle.dump(endings, open(filename, "wb"), pickle.HIGHEST_PROTOCOL)
 
-def _show_promising_groups(groups):
-    def fitness(group):
-        end_states, patterns = group
+def _sort_by_fitness(endings):
+    def fitness(ending):
+        end_states, patterns = ending
         io_rate = len(patterns) / float(len(end_states))
         return (io_rate, len(patterns))
 
-    N = 8
-    items = groups.items()
-    items.sort(key=fitness, reverse=True)
-    print "DEBUG: top %s items:" % N
-    for end_states, patterns in items[:N]:
+    endings.sort(key=fitness, reverse=True)
+
+def _show_top_endings(endings, top=8):
+    print "DEBUG: top %s endings:" % top
+    for end_states, patterns in endings[:top]:
         print len(patterns), len(end_states)
         print Maze(end_states[0])
         print "=" * 5
@@ -91,7 +91,10 @@ def main():
     endings = _filter_duplicates(endings)
     groups = _group_by_end_states(endings)
 
-    _show_promising_groups(groups)
-    _save_endings(groups.items(), "../export/endings/sokoban2.pickle")
+    endings = groups.items()
+    _sort_by_fitness(endings)
+    _save_endings(endings, "../export/endings/sokoban2.pickle")
+
+    _show_top_endings(endings)
 
 main()
