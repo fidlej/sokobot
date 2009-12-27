@@ -3,6 +3,7 @@ from soko.struct.recognizing import PatternRecognizer
 from soko.struct.fakerecognizing import ExpanderBasedRecognizer
 from soko.struct import modeling
 from soko.env.env import Action
+from soko.env.coding import UNKNOWN_MARK
 from pylib import v2
 
 def _get_fake_recognizer():
@@ -19,8 +20,8 @@ def _get_pattern_recognizer():
 class AggregateExpander(object):
     def __init__(self):
         #TODO: allow to pass in or configure the used recognizer
-        self.recognizer = _get_fake_recognizer()
-        #self.recognizer = _get_pattern_recognizer()
+        #self.recognizer = _get_fake_recognizer()
+        self.recognizer = _get_pattern_recognizer()
 
     def get_actions(self, s):
         actions = []
@@ -51,8 +52,9 @@ def _apply_end_state(s, shift, end_state):
     next_s = modeling.mutablize(s)
     for local_y, row in enumerate(end_state):
         for local_x, mark in enumerate(row):
-            x, y = v2.sum(shift, (local_x,local_y))
-            next_s[y][x] = mark
+            if mark is not UNKNOWN_MARK:
+                x, y = v2.sum(shift, (local_x,local_y))
+                next_s[y][x] = mark
 
     return next_s
 
