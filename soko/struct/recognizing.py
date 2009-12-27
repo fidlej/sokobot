@@ -6,8 +6,16 @@ from pylib import v2
 class Gate(object):
     """A represetation of an local aggregate state.
     """
-    def __init__(self, end_states):
+    def __init__(self, end_states, pattern):
         self.end_states = end_states
+        self.pattern = pattern
+
+    def get_norm_pattern(self):
+        """Returns a pattern to represent
+        the gate input in a normalized state.
+        """
+        return self.pattern
+
     def get_end_states(self):
         """Returns the end states from this gate.
         They are represented as actions relative to the gate position.
@@ -37,7 +45,13 @@ class PatternRecognizer(object):
     def _find_gate(self, maze, pos):
         shift, ending = self._find_ending(maze, pos)
         end_states, patterns = ending
-        return (shift, Gate(end_states))
+        return (shift, Gate(end_states,
+            self._choose_normalizing_pattern(patterns)))
+
+    def _choose_normalizing_pattern(self, patterns):
+        if patterns:
+            return patterns[0]
+        return ()
 
     def _find_ending(self, maze, pos):
         """Returns the ending matching the given

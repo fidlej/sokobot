@@ -16,7 +16,7 @@ class ExpanderBasedRecognizer(object):
             next_s = modeling.predict(s, a)
             end_states.append(next_s)
 
-        gate = Gate(end_states)
+        gate = Gate(end_states, ())
         return [((0,0), gate)]
 
 

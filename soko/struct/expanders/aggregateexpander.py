@@ -29,16 +29,24 @@ class AggregateExpander(object):
         for pos, gate in pos_gates:
             for end_state in gate.get_end_states():
                 next_s = _apply_end_state(s, pos, end_state)
-                a = _normalize_action(s, next_s)
+                next_s = self._normalize_state(next_s)
+                a = _prepare_action(s, next_s)
                 actions.append(a)
 
         return actions
 
-def _normalize_action(s, next_s, cost=1):
-    """Returns an action that would
-    produce an equivalent normalized state.
+    def _normalize_state(self, s):
+        """Converts the patterns in the state
+        to their normalized form.
+        """
+        pos_gates = self.recognizer.recognize_gates(s)
+        for pos, gate in pos_gates:
+            s = _apply_end_state(s, pos, gate.get_norm_pattern())
+        return s
+
+def _prepare_action(s, next_s, cost=1):
+    """Returns an action that would do the transition.
     """
-    next_s = _normalize_state(next_s)
     cmd = []
     for y, (row, next_row) in enumerate(zip(s, next_s)):
         for x, (cell, next_cell) in enumerate(zip(row, next_row)):
