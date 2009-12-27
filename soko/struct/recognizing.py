@@ -63,7 +63,10 @@ def _is_matching(shift, pattern, maze):
                 continue
 
             pos = v2.sum(shift, (x,y))
-            if mark != maze.get(pos):
+            try:
+                if mark != maze.get(pos):
+                    return False
+            except IndexError, e:
                 return False
 
     return True
