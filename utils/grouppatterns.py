@@ -28,28 +28,29 @@ def _read_patterns(input):
 
     return patterns
 
-def _group_by_end_states(pattern_end_states):
+def _group_by_end_states(endings):
     groups = {}
-    for pattern, end_states in pattern_end_states:
-        groups.setdefault(end_states, []).append(pattern)
+    for end_states, patterns in endings:
+        group_patterns = groups.setdefault(end_states, [])
+        group_patterns += list(patterns)
 
     return groups
 
-def _generalize_with_end_states(patterns):
-    return [_get_generalized(p) for p in patterns]
+def _generate_endings(patterns):
+    return [_get_ending(p) for p in patterns]
 
-def _get_generalized(pattern):
-    """Returns (generalized_pattern, end_states) pair.
+def _get_ending(pattern):
+    """Calculates the ending for the given pattern.
+    The ending is a pair: (end_states, (generalized_pattern,))
     """
     #TODO: allow to specify the set of rules
     # based on the env that generated the patterns.
     rules = SOKOBAN_RULES
     end_states, used_cells = preproc.detect_end_states(pattern, rules)
 
-    pattern = preproc.generalize(pattern, used_cells)
-    new_end_states = set(preproc.generalize(s, used_cells) for s in end_states)
-    assert new_end_states == end_states
-    return pattern, tuple(end_states)
+    generalized_pattern = preproc.generalize(pattern, used_cells)
+    end_states = set(preproc.generalize(s, used_cells) for s in end_states)
+    return tuple(end_states), (generalized_pattern,)
 
 def _filter_duplicates(patterns):
     return list(set(patterns))
@@ -80,9 +81,9 @@ def main():
     filename = args[0]
     patterns = _read_patterns(open(filename))
     patterns = _filter_duplicates(patterns)
-    pattern_end_states = _generalize_with_end_states(patterns)
-    pattern_end_states = _filter_duplicates(pattern_end_states)
-    groups = _group_by_end_states(pattern_end_states)
+    endings = _generate_endings(patterns)
+    endings = _filter_duplicates(endings)
+    groups = _group_by_end_states(endings)
 
     _show_promising_groups(groups)
 
