@@ -54,6 +54,9 @@ class PatternRecognizer(object):
                     if _is_matching(shift, pattern, maze):
                         return (shift, ending)
 
+        #TODO: report the unseen patterns
+        return ((0,0), ((), ()))
+        print maze
         assert None is "Impossible for now."
 
 def _is_matching(shift, pattern, maze):
