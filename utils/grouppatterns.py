@@ -55,6 +55,12 @@ def _get_ending(pattern):
 def _filter_duplicates(patterns):
     return list(set(patterns))
 
+def _save_endings(endings, filename):
+    from pylib import disk
+    import cPickle as pickle
+    disk.prepare_path(filename)
+    pickle.dump(endings, open(filename, "wb"), pickle.HIGHEST_PROTOCOL)
+
 def _show_promising_groups(groups):
     def fitness(group):
         end_states, patterns = group
@@ -86,5 +92,6 @@ def main():
     groups = _group_by_end_states(endings)
 
     _show_promising_groups(groups)
+    _save_endings(groups.items(), "../export/endings/sokoban2.pickle")
 
 main()
