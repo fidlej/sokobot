@@ -3,7 +3,7 @@ from soko.env.coding import UNKNOWN_MARK
 from soko.struct import modeling
 
 def detect_end_states(pattern, rules):
-    """Returns a (end_states, used_cells) pair
+    """Returns a (end_states, used_cells, num_seen_states) pair
     with the end states for the pattern
     and the informative cell positions of the pattern.
     """
@@ -25,7 +25,7 @@ def detect_end_states(pattern, rules):
                     else:
                         queue.append(child)
 
-    return end_states, used_cells
+    return end_states, used_cells, len(seen)
 
 def generalize(pattern, used_cells):
     """Erases the unused positions.
