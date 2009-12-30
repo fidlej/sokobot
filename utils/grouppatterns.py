@@ -42,7 +42,7 @@ def _group_by_end_states(pattern_endings):
     for pe in pattern_endings:
         if pe.end_states in groups:
             patterns = groups.pop(pe.end_states)
-            endings.append((pe.end_states, tuple(pe.pattern)))
+            endings.append((pe.end_states, tuple(patterns)))
 
     return endings
 
