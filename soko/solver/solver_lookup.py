@@ -1,5 +1,5 @@
 
-from soko.solver import astar, ida, steering, rbfs
+from soko.solver import astar, ida, steering, rbfs, mc
 from pylib.namedtuple import namedtuple
 
 from soko.env.macroenv import MacroEnv
@@ -45,6 +45,7 @@ SOLVERS = dict(
         steer=steering.SteeringSolver,
         rbfs=rbfs.RbfsSolver,
         rida=rbfs.IdaSolver,
+        mc=mc.McSolver,
         )
 
 PREFIXES = (

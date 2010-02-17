@@ -6,7 +6,6 @@ from soko.env.pusherenv import PusherEnv, SokobanEnv
 from soko.env.fillets import FilletsEnv
 from soko.env.npuzzle import PuzzleEnv
 from soko.struct.glue import EnvGlue
-SokobanEnv = EnvGlue
 
 ENVS = dict(
         finder=PathFinderEnv,
