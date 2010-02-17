@@ -1,8 +1,7 @@
 
-import logging
 import random
+import math
 
-from soko import runtime, INF_COST
 from soko.solver.solver import Solver
 
 class McSolver(Solver):
@@ -45,17 +44,31 @@ class Memory(object):
 
 
 def _choose_action(env, s, memory):
-    choices = []
-    for a in env.get_actions(s):
+    weights = []
+    actions =  env.get_actions(s)
+    for a in actions:
         next_s = env.predict(s, a)
         num_visits = memory.get_num_visits(next_s)
-        choices.append((num_visits, a))
+        weights.append(1.0/(num_visits + 1))
 
-    if not choices:
+    if not weights:
         return None
 
-    #TODO: choose at random, if the num_visits are equal
-    num_visits, a = min(choices)
+    a_index = _softmax(weights)
     #TODO: return also None when num_visits > k.
-    return a
+    return actions[a_index]
+
+def _softmax(weights):
+    """Returns the index of the choosen choice.
+    """
+    temperature = 0.1
+    items = [math.exp(w/temperature) for w in weights]
+    selection = random.random() * sum(items)
+    boundary = 0
+    for i, item in enumerate(items):
+        boundary += item
+        if boundary >= selection:
+            return i
+
+    assert not "Wrong normalization"
 
