@@ -13,33 +13,14 @@ class McSolver(Solver):
         """Returns a solution as a list of actions.
         """
         s = env.init()
-        path = _sample(env, s)
+        info = SearchInfo(env)
+        path = _sample(info, s)
         return path
 
 
-def _sample(env, s):
-    """Returns a random path to the goal or None.
-    """
-    memory = Memory()
-    path = []
-    cost = env.estim_cost(s)
-    while cost > 0:
-        a = _choose_action(env, s, memory)
-        if a is None:
-            return None
-        if memory.get_num_visits(s) > MAX_NUM_VISITS:
-            return None
-
-        path.append(a)
-        memory.inc_num_visits(s)
-        s = env.predict(s, a)
-        cost = env.estim_cost(s)
-
-    return path
-
-
-class Memory(object):
-    def __init__(self):
+class SearchInfo(object):
+    def __init__(self, env):
+        self.env = env
         self.visits = {}
     def get_num_visits(self, s):
         return self.visits.get(s, 0)
@@ -47,12 +28,35 @@ class Memory(object):
         self.visits[s] = self.visits.get(s, 0) + 1
 
 
-def _choose_action(env, s, memory):
+
+def _sample(info, s):
+    """Returns a random path to the goal or None.
+    """
+    env = info.env
+    path = []
+    cost = env.estim_cost(s)
+    while cost > 0:
+        a = _choose_action(info, s)
+        if a is None:
+            return None
+        if info.get_num_visits(s) > MAX_NUM_VISITS:
+            return None
+
+        path.append(a)
+        info.inc_num_visits(s)
+        s = env.predict(s, a)
+        cost = env.estim_cost(s)
+
+    return path
+
+
+def _choose_action(info, s):
+    env = info.env
     weights = []
     actions =  env.get_actions(s)
     for a in actions:
         next_s = env.predict(s, a)
-        num_visits = memory.get_num_visits(next_s)
+        num_visits = info.get_num_visits(next_s)
         weights.append(1.0/(num_visits + 1))
 
     if not weights:
