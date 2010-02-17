@@ -4,5 +4,5 @@
 solution_file=`mktemp /tmp/sokobot.solution.XXXXXXXXXX` || exit 1
 trap 'rm -f "$solution_file"' 0 1 2 3 15
 if ./solve.py --vs "$@" >"$solution_file" ; then
-    ./utils/scroll.py "$solution_file"
+    python2.6 ./utils/scroll.py "$solution_file"
 fi
