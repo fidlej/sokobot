@@ -4,6 +4,8 @@ import math
 
 from soko.solver.solver import Solver
 
+MAX_NUM_VISITS = 10
+
 class McSolver(Solver):
     """A Nested Monte-Carlo search.
     """
@@ -24,6 +26,8 @@ def _sample(env, s):
     while cost > 0:
         a = _choose_action(env, s, memory)
         if a is None:
+            return None
+        if memory.get_num_visits(s) > MAX_NUM_VISITS:
             return None
 
         path.append(a)
@@ -55,7 +59,6 @@ def _choose_action(env, s, memory):
         return None
 
     a_index = _softmax(weights)
-    #TODO: return also None when num_visits > k.
     return actions[a_index]
 
 def _softmax(weights):
