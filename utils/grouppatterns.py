@@ -8,7 +8,7 @@ import sys
 import sokopath
 from soko.mazing import Maze
 from soko.struct.rules.sokorule import SOKOBAN_RULES
-from soko.struct import preproc
+from soko.struct import preproc, modeling
 
 from pylib.namedtuple import namedtuple
 
@@ -25,7 +25,7 @@ def _read_patterns(input):
 
         if len(lines) == pattern_h or (pattern_h is None and line == separator):
             pattern_h = len(lines)
-            patterns.append(tuple(lines))
+            patterns.append(modeling.immutablize(lines))
             lines = []
 
     return patterns
