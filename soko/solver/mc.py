@@ -123,8 +123,8 @@ def _sample(info, s):
             path.append(a)
             state_indexes.append(s)
         else:
-            path = path[:s_index +1]
-            state_indexes = state_indexes[:s_index +1]
+            del path[s_index +1:]
+            del state_indexes[s_index +1:]
 
     return path
 
