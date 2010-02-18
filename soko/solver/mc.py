@@ -16,9 +16,14 @@ class McSolver(Solver):
         s = env.init()
         info = _SearchInfo(env)
         level = 1
-        path = _nested(info, s, level)
-        #path = _sample(info, s)
-        return path
+        num_attempts = 10
+        for i in xrange(num_attempts):
+            path = _nested(info, s, level)
+            #path = _sample(info, s)
+            if path is not None:
+                return path
+
+        return None
 
 
 class _SearchInfo(object):
@@ -50,9 +55,11 @@ class _Memory(object):
 
 def _nested(info, s, level):
     env = info.env
+    seen_states = set()
     path = []
     while not _is_goal(env, s):
-        a = _choose_best_action(info, s, level)
+        seen_states.add(s)
+        a = _choose_best_action(info, s, level, seen_states)
         if a is None:
             return None
 
@@ -61,7 +68,7 @@ def _nested(info, s, level):
 
     return path
 
-def _choose_best_action(info, s, level):
+def _choose_best_action(info, s, level, seen_states):
     """Returns the best known action in the given state.
     It returns None if the problem seems unsolvable.
     """
@@ -70,6 +77,9 @@ def _choose_best_action(info, s, level):
     best_action = None
     for a in env.get_actions(s):
         next_s = env.predict(s, a)
+        if next_s in seen_states:
+            continue
+
         if level == 1:
             path = _sample(info, next_s)
         else:
@@ -106,11 +116,12 @@ def _sample(info, s):
         memory.inc_num_visits(s)
         s = env.predict(s, a)
 
+        # Removal of cycles from the path
         try:
             s_index = state_indexes.index(s)
         except ValueError:
-            state_indexes.append(s)
             path.append(a)
+            state_indexes.append(s)
         else:
             path = path[:s_index +1]
             state_indexes = state_indexes[:s_index +1]
