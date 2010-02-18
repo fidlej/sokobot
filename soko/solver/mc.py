@@ -16,7 +16,7 @@ class McSolver(Solver):
         s = env.init()
         info = _SearchInfo(env)
         level = 1
-        num_attempts = 10
+        num_attempts = 1
         for i in xrange(num_attempts):
             path = _nested(info, s, level)
             #path = _sample(info, s)
@@ -58,6 +58,7 @@ def _nested(info, s, level):
     seen_states = set()
     path = []
     while not _is_goal(env, s):
+        print env.format(s)
         seen_states.add(s)
         a = _choose_best_action(info, s, level, seen_states)
         if a is None:
@@ -75,17 +76,20 @@ def _choose_best_action(info, s, level, seen_states):
     env = info.env
     min_cost = None
     best_action = None
+    #TODO: don't collect the costs when not using the debug output
+    costs = []
     for a in env.get_actions(s):
         next_s = env.predict(s, a)
         if next_s in seen_states:
             continue
 
         if level == 1:
-            path = _sample(info, next_s)
+            path = _attempt_sample(info, next_s)
         else:
             path = _nested(info, next_s, level - 1)
 
         cost = info.calc_best_cost(next_s, path)
+        costs.append(cost)
         if cost is None:
             continue
 
@@ -93,8 +97,16 @@ def _choose_best_action(info, s, level, seen_states):
             min_cost = cost
             best_action = a
 
-    print "best action:", s, best_action, min_cost
+    print "best action:", s, best_action, min_cost, costs
     return best_action
+
+def _attempt_sample(info, s, num_attempts=10):
+    for i in xrange(num_attempts):
+        path = _sample(info, s)
+        if path is not None:
+            return path
+
+    return None
 
 def _is_goal(env, s):
     return env.estim_cost(s) == 0
@@ -105,15 +117,15 @@ def _sample(info, s):
     memory = _Memory()
     env = info.env
     path = []
-    state_indexes = []
+    state_indexes = [s]
     while not _is_goal(env, s):
+        memory.inc_num_visits(s)
         a = _choose_random_action(env, s, memory)
         if a is None:
             return None
         if memory.get_num_visits(s) > MAX_NUM_VISITS:
             return None
 
-        memory.inc_num_visits(s)
         s = env.predict(s, a)
 
         # Removal of cycles from the path
@@ -123,7 +135,7 @@ def _sample(info, s):
             path.append(a)
             state_indexes.append(s)
         else:
-            del path[s_index +1:]
+            del path[s_index:]
             del state_indexes[s_index +1:]
 
     return path
