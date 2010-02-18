@@ -24,6 +24,20 @@ class McSolver(Solver):
 class _SearchInfo(object):
     def __init__(self, env):
         self.env = env
+        self.costs = {}
+
+    def calc_best_cost(self, s, path):
+        """Returns and stores the best known cost for the given state.
+        It could return None when there seems to be no solution.
+        """
+        known_cost = self.costs.get(s)
+        if path is None:
+            return known_cost
+
+        cost = calc_path_cost(path)
+        if known_cost is None or cost < known_cost:
+            known_cost = self.costs[s] = cost
+        return known_cost
 
 class _Memory(object):
     def __init__(self):
@@ -56,20 +70,20 @@ def _choose_best_action(info, s, level):
     best_action = None
     for a in env.get_actions(s):
         next_s = env.predict(s, a)
-        #TODO: use also the best previously known score for next_s
         if level == 1:
             path = _sample(info, next_s)
         else:
             path = _nested(info, next_s, level - 1)
 
-        if path is None:
+        cost = info.calc_best_cost(next_s, path)
+        if cost is None:
             continue
 
-        cost = calc_path_cost(path)
         if min_cost is None or cost < min_cost:
             min_cost = cost
             best_action = a
 
+    #print "best action:", s, best_action, min_cost
     return best_action
 
 def _is_goal(env, s):
@@ -78,6 +92,7 @@ def _is_goal(env, s):
 def _sample(info, s):
     """Returns a random path to the goal or None.
     """
+    start_s = s
     memory = _Memory()
     env = info.env
     path = []
@@ -91,6 +106,8 @@ def _sample(info, s):
         path.append(a)
         memory.inc_num_visits(s)
         s = env.predict(s, a)
+        if s == start_s:
+            path = []
 
     return path
 
