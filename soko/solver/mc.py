@@ -83,7 +83,7 @@ def _choose_best_action(info, s, level):
             min_cost = cost
             best_action = a
 
-    #print "best action:", s, best_action, min_cost
+    print "best action:", s, best_action, min_cost
     return best_action
 
 def _is_goal(env, s):
@@ -92,10 +92,10 @@ def _is_goal(env, s):
 def _sample(info, s):
     """Returns a random path to the goal or None.
     """
-    start_s = s
     memory = _Memory()
     env = info.env
     path = []
+    state_indexes = []
     while not _is_goal(env, s):
         a = _choose_random_action(env, s, memory)
         if a is None:
@@ -103,11 +103,17 @@ def _sample(info, s):
         if memory.get_num_visits(s) > MAX_NUM_VISITS:
             return None
 
-        path.append(a)
         memory.inc_num_visits(s)
         s = env.predict(s, a)
-        if s == start_s:
-            path = []
+
+        try:
+            s_index = state_indexes.index(s)
+        except ValueError:
+            state_indexes.append(s)
+            path.append(a)
+        else:
+            path = path[:s_index +1]
+            state_indexes = state_indexes[:s_index +1]
 
     return path
 
