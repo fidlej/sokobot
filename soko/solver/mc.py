@@ -127,10 +127,10 @@ def _sample(env, s, policy=_choose_random_action):
         a = policy(env, s, memory)
         if a is None:
             return None
-        if memory.get_num_visits(s) > MAX_NUM_VISITS:
-            return None
 
         s = env.predict(s, a)
+        if memory.get_num_visits(s) > MAX_NUM_VISITS:
+            return None
 
         # Removal of cycles from the path
         try:
