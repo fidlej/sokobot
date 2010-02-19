@@ -19,7 +19,7 @@ class McSolver(Solver):
         num_attempts = 1
         for i in xrange(num_attempts):
             path = _nested(info, s, level)
-            #path = _sample(info, s)
+            #path = _sample(env, s)
             if path is not None:
                 return path
 
@@ -54,22 +54,13 @@ class _Memory(object):
 
 
 def _nested(info, s, level):
-    env = info.env
-    seen_states = set()
-    path = []
-    while not _is_goal(env, s):
+    def policy(env, s, memory):
         print env.format(s)
-        seen_states.add(s)
-        a = _choose_best_action(info, s, level, seen_states)
-        if a is None:
-            return None
+        return _choose_best_action(info, s, level, memory)
 
-        path.append(a)
-        s = env.predict(s, a)
+    return _sample(info.env, s, policy)
 
-    return path
-
-def _choose_best_action(info, s, level, seen_states):
+def _choose_best_action(info, s, level, memory):
     """Returns the best known action in the given state.
     It returns None if the problem seems unsolvable.
     """
@@ -78,7 +69,7 @@ def _choose_best_action(info, s, level, seen_states):
     alternatives = []
     for a in env.get_actions(s):
         next_s = env.predict(s, a)
-        if next_s in seen_states:
+        if memory.get_num_visits(next_s) > 0:
             alternatives.append(a)
         else:
             proper.append(a)
@@ -98,7 +89,7 @@ def _choose_from_actions(info, s, actions, level):
     for a in actions:
         next_s = env.predict(s, a)
         if level == 1:
-            path = _attempt_sample(info, next_s)
+            path = _attempt_sample(env, next_s)
         else:
             path = _nested(info, next_s, level - 1)
 
@@ -114,9 +105,9 @@ def _choose_from_actions(info, s, actions, level):
     print "best action:", s, best_action, min_cost, costs
     return best_action
 
-def _attempt_sample(info, s, num_attempts=10):
+def _attempt_sample(env, s, num_attempts=10):
     for i in xrange(num_attempts):
-        path = _sample(info, s)
+        path = _sample(env, s)
         if path is not None:
             return path
 
@@ -125,16 +116,32 @@ def _attempt_sample(info, s, num_attempts=10):
 def _is_goal(env, s):
     return env.estim_cost(s) == 0
 
-def _sample(info, s):
+def _choose_random_action(env, s, memory):
+    """Chooses a random action.
+    It gives more probability to less visited next states.
+    """
+    weights = []
+    actions =  env.get_actions(s)
+    for a in actions:
+        next_s = env.predict(s, a)
+        num_visits = memory.get_num_visits(next_s)
+        weights.append(1.0/(num_visits + 1))
+
+    if not weights:
+        return None
+
+    a_index = _softmax(weights)
+    return actions[a_index]
+
+def _sample(env, s, policy=_choose_random_action):
     """Returns a random path to the goal or None.
     """
     memory = _Memory()
-    env = info.env
     path = []
     state_indexes = [s]
     while not _is_goal(env, s):
         memory.inc_num_visits(s)
-        a = _choose_random_action(env, s, memory)
+        a = policy(env, s, memory)
         if a is None:
             return None
         if memory.get_num_visits(s) > MAX_NUM_VISITS:
@@ -153,24 +160,6 @@ def _sample(info, s):
             del state_indexes[s_index +1:]
 
     return path
-
-
-def _choose_random_action(env, s, memory):
-    """Chooses a random action.
-    It gives more probability to less visited next states.
-    """
-    weights = []
-    actions =  env.get_actions(s)
-    for a in actions:
-        next_s = env.predict(s, a)
-        num_visits = memory.get_num_visits(next_s)
-        weights.append(1.0/(num_visits + 1))
-
-    if not weights:
-        return None
-
-    a_index = _softmax(weights)
-    return actions[a_index]
 
 def _softmax(weights):
     """Returns the index of the choosen choice.
