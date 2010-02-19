@@ -45,6 +45,7 @@ class _SearchInfo(object):
             known_cost = self.costs[s] = cost
         return known_cost
 
+
 class _Memory(object):
     def __init__(self):
         self.visits = {}
@@ -68,8 +69,6 @@ def _choose_best_action(info, s, level, memory):
     env = info.env
     min_cost = None
     best_action = None
-    #TODO: don't collect the costs when not using the debug output
-    costs = []
     for a in env.get_actions(s):
         next_s = env.predict(s, a)
         if level == 1:
@@ -78,7 +77,6 @@ def _choose_best_action(info, s, level, memory):
             path = _nested(info, next_s, level - 1)
 
         cost = info.update_best_cost(next_s, path)
-        costs.append(cost)
         if cost is None:
             continue
 
@@ -87,7 +85,7 @@ def _choose_best_action(info, s, level, memory):
             min_cost = cost
             best_action = a
 
-    print "best action:", s, best_action, min_cost, costs
+    print "best action:", s, best_action, min_cost
     return best_action
 
 def _attempt_sample(env, s, num_attempts=10):
