@@ -32,7 +32,7 @@ class _SearchInfo(object):
         self.env = env
         self.costs = {}
 
-    def calc_best_cost(self, s, path):
+    def update_best_cost(self, s, path):
         """Returns and stores the best known cost for the given state.
         It could return None when there seems to be no solution.
         """
@@ -77,7 +77,7 @@ def _choose_best_action(info, s, level, memory):
         else:
             path = _nested(info, next_s, level - 1)
 
-        cost = info.calc_best_cost(next_s, path)
+        cost = info.update_best_cost(next_s, path)
         costs.append(cost)
         if cost is None:
             continue
