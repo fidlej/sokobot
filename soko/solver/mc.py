@@ -6,6 +6,7 @@ from soko.solver.solver import Solver
 from soko.visual.lengthvisualizer import calc_path_cost
 
 MAX_NUM_VISITS = 10
+MAX_COST = 100000
 
 class McSolver(Solver):
     """A Nested Monte-Carlo search.
@@ -65,28 +66,11 @@ def _choose_best_action(info, s, level, memory):
     It returns None if the problem seems unsolvable.
     """
     env = info.env
-    proper = []
-    alternatives = []
-    for a in env.get_actions(s):
-        next_s = env.predict(s, a)
-        if memory.get_num_visits(next_s) > 0:
-            alternatives.append(a)
-        else:
-            proper.append(a)
-
-    best_action = _choose_from_actions(info, s, proper, level)
-    if best_action is None:
-        best_action = _choose_from_actions(info, s, alternatives, level)
-    return best_action
-
-
-def _choose_from_actions(info, s, actions, level):
-    env = info.env
     min_cost = None
     best_action = None
     #TODO: don't collect the costs when not using the debug output
     costs = []
-    for a in actions:
+    for a in env.get_actions(s):
         next_s = env.predict(s, a)
         if level == 1:
             path = _attempt_sample(env, next_s)
@@ -98,6 +82,7 @@ def _choose_from_actions(info, s, actions, level):
         if cost is None:
             continue
 
+        cost = memory.get_num_visits(next_s) * (MAX_COST + 1) + cost
         if min_cost is None or cost < min_cost:
             min_cost = cost
             best_action = a
