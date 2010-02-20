@@ -120,12 +120,13 @@ def _choose_random_action(info, s, memory):
     It gives more probability to less visited next states.
     """
     env = info.env
+    critic = info.critic
     weights = []
     actions =  env.get_actions(s)
     for a in actions:
         next_s = env.predict(s, a)
         num_visits = memory.get_num_visits(next_s)
-        weights.append(1.0/(num_visits + 1))
+        weights.append(critic.evaluate(s, a)/float(num_visits + 1))
 
     if not weights:
         return None

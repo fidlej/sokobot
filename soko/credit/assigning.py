@@ -22,10 +22,12 @@ class Critic(object):
         p_bad = 1.0/len(actions)
         self._assign_credit(actions, states, -1*p_bad)
 
-    def evalute(self, s, a):
+    def evaluate(self, s, a):
         """Returns a weight that the move is a good move.
         """
         total, num_uses = self.credits.get(_identify_move(s, a), DEFAULT_ENTRY)
+        if num_uses == 0:
+            return DEFAULT_CREDIT
         return total/float(num_uses)
 
     def save(self):
