@@ -3,7 +3,8 @@ from soko.struct.modeling import immutablize
 from soko.credit.storing import Storage
 
 MARGIN = 1
-DEFAULT_VALUE = (0, 0)
+DEFAULT_CREDIT = 0
+DEFAULT_ENTRY = (DEFAULT_CREDIT, 0)
 
 class Critic(object):
     def __init__(self):
@@ -21,6 +22,12 @@ class Critic(object):
         p_bad = 1.0/len(actions)
         self._assign_credit(actions, states, -1*p_bad)
 
+    def evalute(self, s, a):
+        """Returns a weight that the move is a good move.
+        """
+        total, num_uses = self.credits.get(_identify_move(s, a), DEFAULT_ENTRY)
+        return total/float(num_uses)
+
     def save(self):
         self.storage.save(self.credits)
 
@@ -28,7 +35,7 @@ class Critic(object):
         """Assigns the given credit to all actions on the given path.
         """
         for move in _get_moves(states, actions):
-            total, num_uses = self.credits.get(move, DEFAULT_VALUE)
+            total, num_uses = self.credits.get(move, DEFAULT_ENTRY)
             self.credits[move] = (total + credit, num_uses + 1)
 
 

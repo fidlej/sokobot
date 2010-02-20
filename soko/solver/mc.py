@@ -17,7 +17,7 @@ class McSolver(Solver):
         """
         critic = Critic()
         path = self._solve(env, critic)
-        critic.save()
+        #critic.save()
 
         pairs = [(total/float(num_uses), move) for move, (total, num_uses)
                 in critic.credits.iteritems()]
@@ -72,8 +72,8 @@ class _Memory(object):
 
 
 def _nested(info, s, level):
-    def policy(env, s, memory):
-        print env.format(s)
+    def policy(info, s, memory):
+        print info.env.format(s)
         return _choose_best_action(info, s, level, memory)
 
     return _sample(info, s, policy)
@@ -115,10 +115,11 @@ def _attempt_sample(info, s, num_attempts=10):
 def _is_goal(env, s):
     return env.estim_cost(s) == 0
 
-def _choose_random_action(env, s, memory):
+def _choose_random_action(info, s, memory):
     """Chooses a random action.
     It gives more probability to less visited next states.
     """
+    env = info.env
     weights = []
     actions =  env.get_actions(s)
     for a in actions:
@@ -142,7 +143,7 @@ def _sample(info, s, policy=_choose_random_action):
     state_indexes = [s]
     while not _is_goal(env, s):
         memory.inc_num_visits(s)
-        a = policy(env, s, memory)
+        a = policy(info, s, memory)
         if a is None:
             critic.punish(path, state_indexes)
             return None

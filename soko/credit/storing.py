@@ -9,7 +9,7 @@ class Storage(object):
     def load(self, default=None):
         try:
             input = open(self.filename, "rb")
-        except IOError, e:
+        except IOError:
             return default
 
         value = pickle.load(input)
