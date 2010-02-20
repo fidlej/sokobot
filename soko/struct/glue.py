@@ -1,7 +1,6 @@
 
 from soko.env.env import Env
 from soko.struct.expanders.pushexpander import PushExpander
-from soko.struct.expanders.aggregateexpander import AggregateExpander
 from soko.struct.estimators import sokoestimator
 from soko.struct import modeling
 
@@ -11,8 +10,7 @@ class EnvGlue(Env):
 
     def configure(self, config):
         #TODO: allow to use different classes based on the command line args
-        #self.expander = PushExpander()
-        self.expander = AggregateExpander()
+        self.expander = PushExpander()
         self.estimator = sokoestimator.SokoEnvSokoEstimator()
         self.estimator.setup_goal(self.maze)
 
