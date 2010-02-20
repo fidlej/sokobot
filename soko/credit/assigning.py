@@ -18,11 +18,13 @@ def _identify_move(s, a):
     effects = a.get_cmd()
     xs = [pos[0] for pos, mark in effects]
     ys = [pos[1] for pos, mark in effects]
+    min_x = min(xs)
+    max_x = max(xs)
     for y in xrange(min(ys) - MARGIN, max(ys) + MARGIN + 1):
         row = s[y]
         pattern_row = []
         pattern.append(pattern_row)
-        for x in xrange(min(xs) - MARGIN, max(xs) + MARGIN + 1):
+        for x in xrange(min_x - MARGIN, max_x + MARGIN + 1):
             pattern_row.append(row[x])
 
     return pattern
