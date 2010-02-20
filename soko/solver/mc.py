@@ -4,7 +4,7 @@ import math
 
 from soko.solver.solver import Solver
 from soko.visual.lengthvisualizer import calc_path_cost
-from soko.credit.assigning import Critic
+from soko.credit.assigning import Critic, Move
 
 MAX_NUM_VISITS = 10
 MAX_COST = 100000
@@ -17,11 +17,14 @@ class McSolver(Solver):
         """
         critic = Critic()
         path = self._solve(env, critic)
+        critic.save()
+
         pairs = [(total/float(num_uses), move) for move, (total, num_uses)
                 in critic.credits.iteritems()]
         pairs.sort()
         for credit, move in pairs:
-            print move, credit
+            print Move(move), credit
+        print "unique_moves:", len(pairs)
 
         return path
 

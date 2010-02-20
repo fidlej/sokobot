@@ -1,13 +1,14 @@
 
 from soko.struct.modeling import immutablize
+from soko.credit.storing import Storage
 
 MARGIN = 1
 DEFAULT_VALUE = (0, 0)
 
 class Critic(object):
     def __init__(self):
-        self.credits = {}
-        self.num_uses = {}
+        self.storage = Storage("../export/credit/critic.pickle")
+        self.credits = self.storage.load(default={})
 
     def reward(self, actions, states):
         """Gives more credit to the given actions.
@@ -19,6 +20,9 @@ class Critic(object):
             return
         p_bad = 1.0/len(actions)
         self._assign_credit(actions, states, -1*p_bad)
+
+    def save(self):
+        self.storage.save(self.credits)
 
     def _assign_credit(self, actions, states, credit):
         """Assigns the given credit to all actions on the given path.
@@ -67,5 +71,5 @@ def _identify_move(s, a):
         for x in xrange(min_x - MARGIN, max_x + MARGIN + 1):
             pattern_row.append(row[x])
 
-    return Move(immutablize(pattern))
+    return immutablize(pattern)
 
