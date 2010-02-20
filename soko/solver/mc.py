@@ -4,6 +4,7 @@ import math
 
 from soko.solver.solver import Solver
 from soko.visual.lengthvisualizer import calc_path_cost
+from soko.credit import assigning
 
 MAX_NUM_VISITS = 10
 MAX_COST = 100000
@@ -126,10 +127,12 @@ def _sample(env, s, policy=_choose_random_action):
         memory.inc_num_visits(s)
         a = policy(env, s, memory)
         if a is None:
+            assigning.punish(path, state_indexes)
             return None
 
         s = env.predict(s, a)
         if memory.get_num_visits(s) > MAX_NUM_VISITS:
+            assigning.punish(path, state_indexes)
             return None
 
         # Removal of cycles from the path
@@ -142,6 +145,7 @@ def _sample(env, s, policy=_choose_random_action):
             del path[s_index:]
             del state_indexes[s_index +1:]
 
+    assigning.reward(path, state_indexes)
     return path
 
 def _softmax(weights):
