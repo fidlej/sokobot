@@ -4,7 +4,7 @@ import math
 
 from soko.solver.solver import Solver
 from soko.visual.lengthvisualizer import calc_path_cost
-from soko.credit import assigning
+from soko.credit.assigning import Critic
 
 MAX_NUM_VISITS = 10
 MAX_COST = 100000
@@ -15,13 +15,23 @@ class McSolver(Solver):
     def solve(self, env):
         """Returns a solution as a list of actions.
         """
+        critic = Critic()
+        path = self._solve(env, critic)
+        pairs = [(credit, move) for move, credit in critic.credits.iteritems()]
+        pairs.sort()
+        for credit, move in pairs:
+            print move, credit
+
+        return path
+
+    def _solve(self, env, critic):
         s = env.init()
-        info = _SearchInfo(env)
+        info = _SearchInfo(env, critic)
         level = 1
         num_attempts = 1
         for i in xrange(num_attempts):
             path = _nested(info, s, level)
-            #path = _sample(env, s)
+            #path = _sample(info, s)
             if path is not None:
                 return path
 
@@ -29,9 +39,10 @@ class McSolver(Solver):
 
 
 class _SearchInfo(object):
-    def __init__(self, env):
+    def __init__(self, env, critic):
         self.env = env
         self.costs = {}
+        self.critic = critic
 
     def update_best_cost(self, s, path):
         """Returns and stores the best known cost for the given state.
@@ -61,7 +72,7 @@ def _nested(info, s, level):
         print env.format(s)
         return _choose_best_action(info, s, level, memory)
 
-    return _sample(info.env, s, policy)
+    return _sample(info, s, policy)
 
 def _choose_best_action(info, s, level, memory):
     """Returns the best known action in the given state.
@@ -73,7 +84,7 @@ def _choose_best_action(info, s, level, memory):
     for a in env.get_actions(s):
         next_s = env.predict(s, a)
         if level == 1:
-            path = _attempt_sample(env, next_s)
+            path = _attempt_sample(info, next_s)
         else:
             path = _nested(info, next_s, level - 1)
 
@@ -89,9 +100,9 @@ def _choose_best_action(info, s, level, memory):
     print "best action:", best_action, min_cost
     return best_action
 
-def _attempt_sample(env, s, num_attempts=10):
+def _attempt_sample(info, s, num_attempts=10):
     for i in xrange(num_attempts):
-        path = _sample(env, s)
+        path = _sample(info, s)
         if path is not None:
             return path
 
@@ -117,9 +128,11 @@ def _choose_random_action(env, s, memory):
     a_index = _softmax(weights)
     return actions[a_index]
 
-def _sample(env, s, policy=_choose_random_action):
+def _sample(info, s, policy=_choose_random_action):
     """Returns a random path to the goal or None.
     """
+    env = info.env
+    critic = info.critic
     memory = _Memory()
     path = []
     state_indexes = [s]
@@ -127,12 +140,12 @@ def _sample(env, s, policy=_choose_random_action):
         memory.inc_num_visits(s)
         a = policy(env, s, memory)
         if a is None:
-            assigning.punish(path, state_indexes)
+            critic.punish(path, state_indexes)
             return None
 
         s = env.predict(s, a)
         if memory.get_num_visits(s) > MAX_NUM_VISITS:
-            assigning.punish(path, state_indexes)
+            critic.punish(path, state_indexes)
             return None
 
         # Removal of cycles from the path
@@ -145,7 +158,7 @@ def _sample(env, s, policy=_choose_random_action):
             del path[s_index:]
             del state_indexes[s_index +1:]
 
-    assigning.reward(path, state_indexes)
+    critic.reward(path, state_indexes)
     return path
 
 def _softmax(weights):

@@ -1,19 +1,38 @@
 
+from soko.struct.modeling import immutablize
+
 MARGIN = 1
 
-def reward(actions, states):
-    #TODO: ignore non-struct states and actions
+class Critic(object):
+    def __init__(self):
+        self.credits = {}
+
+    def reward(self, actions, states):
+        """Gives more credit to the given actions.
+        """
+        self._assign_credit(actions, states, 1)
+
+    def punish(self, actions, states):
+        self._assign_credit(actions, states, -1)
+
+    def _assign_credit(self, actions, states, credit):
+        if len(actions) == 0:
+            return
+
+        partial_credit = credit/float(len(actions))
+        for move in _get_moves(states, actions):
+            self.credits[move] = self.credits.get(move, 0) + partial_credit
+
+
+def _get_moves(states, actions):
+    moves = []
     for s, a in zip(states, actions):
-        move_id = _identify_move(s, a)
-        print "============"
-        for row in move_id:
-            print "".join(row)
-
-def punish(actions, states):
-    pass
-
+        move = _identify_move(s, a)
+        moves.append(move)
+    return moves
 
 def _identify_move(s, a):
+    #TODO: ignore non-struct states and actions
     pattern = []
     effects = a.get_cmd()
     xs = [pos[0] for pos, mark in effects]
@@ -27,4 +46,5 @@ def _identify_move(s, a):
         for x in xrange(min_x - MARGIN, max_x + MARGIN + 1):
             pattern_row.append(row[x])
 
-    return pattern
+    return immutablize(pattern)
+
