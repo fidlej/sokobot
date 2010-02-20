@@ -12,19 +12,20 @@ class Critic(object):
     def reward(self, actions, states):
         """Gives more credit to the given actions.
         """
-        self._assign_credit(actions, states, 100)
+        self._assign_credit(actions, states, 1)
 
     def punish(self, actions, states):
-        self._assign_credit(actions, states, -1)
-
-    def _assign_credit(self, actions, states, credit):
         if len(actions) == 0:
             return
+        p_bad = 1.0/len(actions)
+        self._assign_credit(actions, states, -1*p_bad)
 
-        partial_credit = credit/float(len(actions))
+    def _assign_credit(self, actions, states, credit):
+        """Assigns the given credit to all actions on the given path.
+        """
         for move in _get_moves(states, actions):
             total, num_uses = self.credits.get(move, DEFAULT_VALUE)
-            self.credits[move] = (total + partial_credit, num_uses + 1)
+            self.credits[move] = (total + credit, num_uses + 1)
 
 
 def _get_moves(states, actions):
