@@ -85,7 +85,7 @@ def _choose_best_action(info, s, level, memory):
             min_cost = cost
             best_action = a
 
-    print "best action:", s, best_action, min_cost
+    print "best action:", best_action, min_cost
     return best_action
 
 def _attempt_sample(env, s, num_attempts=10):
