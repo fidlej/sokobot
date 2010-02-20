@@ -31,6 +31,23 @@ def _get_moves(states, actions):
         moves.append(move)
     return moves
 
+
+class Move(object):
+    def __init__(self, pattern):
+        self.pattern = pattern
+
+    def __eq__(self, other):
+        return self.pattern == other.pattern
+
+    def __hash__(self):
+        return hash(self.pattern)
+
+    def __str__(self):
+        rows = []
+        for row in self.pattern:
+            rows.append("".join(row))
+        return "\n".join(rows)
+
 def _identify_move(s, a):
     #TODO: ignore non-struct states and actions
     pattern = []
@@ -46,5 +63,5 @@ def _identify_move(s, a):
         for x in xrange(min_x - MARGIN, max_x + MARGIN + 1):
             pattern_row.append(row[x])
 
-    return immutablize(pattern)
+    return Move(immutablize(pattern))
 
