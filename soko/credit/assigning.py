@@ -2,15 +2,17 @@
 from soko.struct.modeling import immutablize
 
 MARGIN = 1
+DEFAULT_VALUE = (0, 0)
 
 class Critic(object):
     def __init__(self):
         self.credits = {}
+        self.num_uses = {}
 
     def reward(self, actions, states):
         """Gives more credit to the given actions.
         """
-        self._assign_credit(actions, states, 1)
+        self._assign_credit(actions, states, 100)
 
     def punish(self, actions, states):
         self._assign_credit(actions, states, -1)
@@ -21,7 +23,8 @@ class Critic(object):
 
         partial_credit = credit/float(len(actions))
         for move in _get_moves(states, actions):
-            self.credits[move] = self.credits.get(move, 0) + partial_credit
+            total, num_uses = self.credits.get(move, DEFAULT_VALUE)
+            self.credits[move] = (total + partial_credit, num_uses + 1)
 
 
 def _get_moves(states, actions):
