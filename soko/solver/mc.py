@@ -19,7 +19,7 @@ class McSolver(Solver):
         critic = Critic()
         path = self._solve(env, critic)
         critic.save()
-        #_show_move_credits(critic)
+        _show_move_credits(critic)
 
         return path
 
@@ -38,8 +38,7 @@ class McSolver(Solver):
 
 
 def _show_move_credits(critic):
-    pairs = [(total/float(num_uses), move) for move, (total, num_uses)
-            in critic.credits.iteritems()]
+    pairs = [(credit, move) for move, credit in critic.credits.iteritems()]
     pairs.sort()
     for credit, move in pairs:
         print Move(move), credit

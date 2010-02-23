@@ -4,7 +4,7 @@ from soko.credit.storing import Storage
 
 MARGIN = 1
 DEFAULT_CREDIT = 0
-DEFAULT_ENTRY = (DEFAULT_CREDIT, 0)
+LEARNING_RATE = 0.1
 
 class Critic(object):
     def __init__(self):
@@ -25,10 +25,7 @@ class Critic(object):
     def evaluate(self, s, a):
         """Returns a weight that the move is a good move.
         """
-        total, num_uses = self.credits.get(_identify_move(s, a), DEFAULT_ENTRY)
-        if num_uses == 0:
-            return DEFAULT_CREDIT
-        return total/float(num_uses)
+        return self.credits.get(_identify_move(s, a), DEFAULT_CREDIT)
 
     def save(self):
         self.storage.save(self.credits)
@@ -37,8 +34,8 @@ class Critic(object):
         """Assigns the given credit to all actions on the given path.
         """
         for move in _get_moves(states, actions):
-            total, num_uses = self.credits.get(move, DEFAULT_ENTRY)
-            self.credits[move] = (total + credit, num_uses + 1)
+            old_value = self.credits.setdefault(move, DEFAULT_CREDIT)
+            self.credits[move] += LEARNING_RATE * (credit - old_value)
 
 
 def _get_moves(states, actions):
