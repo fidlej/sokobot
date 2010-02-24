@@ -9,7 +9,6 @@ from soko.credit.fakecritic import AstarCritic
 
 MAX_NUM_VISITS = 10
 MAX_COST = 100000
-WEIGHT_UNVISITED = 1.0
 
 class McSolver(Solver):
     """A Nested Monte-Carlo search.
@@ -31,8 +30,8 @@ class McSolver(Solver):
         level = 1
         num_attempts = 1
         for i in xrange(num_attempts):
-            path = _nested(info, s, level)
-            #path = _sample(info, s)
+            #path = _nested(info, s, level)
+            path = _sample(info, s)
             if path is not None:
                 return path
 
@@ -117,15 +116,14 @@ def _choose_random_action(info, s, memory):
     It gives more probability to less visited next states.
     """
     env = info.env
-    #print env.format(s)
+    print env.format(s)
     critic = info.critic
     weights = []
     actions =  env.get_actions(s)
     for a in actions:
         next_s = env.predict(s, a)
         num_visits = memory.get_num_visits(next_s)
-        weights.append(critic.evaluate(s, a)
-                + WEIGHT_UNVISITED/float(num_visits + 1))
+        weights.append(critic.evaluate(s, a)/float(num_visits + 1))
 
     if not weights:
         return None

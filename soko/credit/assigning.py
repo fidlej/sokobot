@@ -24,7 +24,7 @@ class Critic(object):
         self._assign_credit(actions, states, p_win)
 
     def evaluate(self, s, a):
-        """Returns a weight that the move is a good move.
+        """Returns a non-negative weight that the move is a good move.
         """
         return self.credits.get(_identify_move(s, a), DEFAULT_CREDIT)
 
