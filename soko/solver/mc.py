@@ -128,7 +128,7 @@ def _choose_random_action(info, s, memory):
     if not weights:
         return None
 
-    a_index = _softmax(weights)
+    a_index = _weighted_choice(weights)
     return actions[a_index]
 
 def _sample(info, s, policy=_choose_random_action):
@@ -169,12 +169,14 @@ def _softmax(weights):
     """
     temperature = 0.1
     items = [math.exp(w/temperature) for w in weights]
-    selection = random.random() * sum(items)
+    return _weighted_choice(weights)
+
+def _weighted_choice(weights):
+    selection = random.random() * sum(weights)
     boundary = 0
-    for i, item in enumerate(items):
-        boundary += item
+    for i, w in enumerate(weights):
+        boundary += w
         if boundary >= selection:
             return i
 
     assert not "Wrong normalization"
-
