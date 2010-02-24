@@ -3,7 +3,7 @@ from soko.struct.modeling import immutablize
 from soko.credit.storing import Storage
 
 MARGIN = 1
-DEFAULT_CREDIT = 0
+DEFAULT_CREDIT = 0.9
 LEARNING_RATE = 0.1
 
 class Critic(object):
@@ -20,7 +20,8 @@ class Critic(object):
         if len(actions) == 0:
             return
         p_bad = 1.0/len(actions)
-        self._assign_credit(actions, states, -1*p_bad)
+        p_win = 1 - p_bad
+        self._assign_credit(actions, states, p_win)
 
     def evaluate(self, s, a):
         """Returns a weight that the move is a good move.
