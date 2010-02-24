@@ -73,7 +73,7 @@ def find_path(env, s, cost_fn):
 
     logging.debug("total %s: %s", cur.g, num_visited)
     if cur.h != 0:
-        logging.warn("no way to the goal from:\n%s", env.format(start_s))
+        logging.info("no way to the goal from:\n%s", env.format(start_s))
         return None
 
     path = []

@@ -5,6 +5,7 @@ import math
 from soko.solver.solver import Solver
 from soko.visual.lengthvisualizer import calc_path_cost
 from soko.credit.assigning import Critic, Move
+from soko.credit.fakecritic import AstarCritic
 
 MAX_NUM_VISITS = 10
 MAX_COST = 100000
@@ -16,10 +17,11 @@ class McSolver(Solver):
     def solve(self, env):
         """Returns a solution as a list of actions.
         """
-        critic = Critic()
+        #critic = Critic()
+        critic = AstarCritic(env)
         path = self._solve(env, critic)
         critic.save()
-        _show_move_credits(critic)
+        #print critic
 
         return path
 
@@ -35,14 +37,6 @@ class McSolver(Solver):
                 return path
 
         return None
-
-
-def _show_move_credits(critic):
-    pairs = [(credit, move) for move, credit in critic.credits.iteritems()]
-    pairs.sort()
-    for credit, move in pairs:
-        print Move(move), credit
-    print "unique_moves:", len(pairs)
 
 
 class _SearchInfo(object):

@@ -38,6 +38,16 @@ class Critic(object):
             old_value = self.credits.setdefault(move, DEFAULT_CREDIT)
             self.credits[move] += LEARNING_RATE * (credit - old_value)
 
+    def __str__(self):
+        output = ""
+        pairs = [(credit, move) for move, credit in self.credits.iteritems()]
+        pairs.sort()
+        for credit, move in pairs:
+            output += "%s %s" % (Move(move), credit)
+        output += "unique_moves: %s" % len(pairs)
+        return output
+
+
 
 def _get_moves(states, actions):
     moves = []
