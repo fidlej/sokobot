@@ -8,6 +8,7 @@ from soko.credit.assigning import Critic, Move
 from soko.credit.fakecritic import AstarCritic
 
 MAX_NUM_VISITS = 10
+VISIT_PENALTY = 10
 MAX_COST = 100000
 
 class McSolver(Solver):
@@ -123,7 +124,7 @@ def _choose_random_action(info, s, memory):
     for a in actions:
         next_s = env.predict(s, a)
         num_visits = memory.get_num_visits(next_s)
-        weights.append(critic.evaluate(s, a)/float(num_visits + 1))
+        weights.append(critic.evaluate(s, a)/float(VISIT_PENALTY**num_visits))
 
     if not weights:
         return None
