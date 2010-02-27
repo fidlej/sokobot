@@ -17,8 +17,8 @@ class McSolver(Solver):
     def solve(self, env):
         """Returns a solution as a list of actions.
         """
-        #critic = Critic()
-        critic = AstarCritic(env)
+        critic = Critic()
+        #critic = AstarCritic(env)
         path = self._solve(env, critic)
         critic.save()
         #print critic
@@ -31,8 +31,8 @@ class McSolver(Solver):
         level = 1
         num_attempts = 1
         for i in xrange(num_attempts):
-            #path = _nested(info, s, level)
-            path = _sample(info, s)
+            path = _nested(info, s, level)
+            #path = _sample(info, s)
             if path is not None:
                 return path
 
@@ -49,15 +49,20 @@ class _SearchInfo(object):
         """Returns and stores the best known cost for the given state.
         It could return None when there seems to be no solution.
         """
-        known_cost = self.costs.get(s)
         if path is None:
+            return self.costs.get(s)
             return known_cost
 
-        cost = calc_path_cost(path)
-        if known_cost is None or cost < known_cost:
-            known_cost = self.costs[s] = cost
-        return known_cost
+        self._update_costs(s, path)
+        return self.costs[s]
 
+    def _update_costs(self, s, path):
+        cost = calc_path_cost(path)
+        self.costs[s] = min(self.costs.get(s, cost), cost)
+        for a in path:
+            cost -= a.get_cost()
+            s = self.env.predict(s, a)
+            self.costs[s] = min(self.costs.get(s, cost), cost)
 
 class _Memory(object):
     def __init__(self):
@@ -117,7 +122,7 @@ def _choose_random_action(info, s, memory):
     It gives more probability to less visited next states.
     """
     env = info.env
-    print env.format(s)
+    #print env.format(s)
     critic = info.critic
     weights = []
     actions =  env.get_actions(s)
