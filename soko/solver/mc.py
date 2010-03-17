@@ -4,8 +4,8 @@ import math
 
 from soko.solver.solver import Solver
 from soko.visual.lengthvisualizer import calc_path_cost
-from soko.credit.assigning import Critic, Move
-from soko.credit.fakecritic import AstarCritic
+from soko.credit.assigning import Critic
+from soko.credit.fakecritic import AstarCritic, RandomCritic
 
 MAX_NUM_VISITS = 10
 VISIT_PENALTY = 10
@@ -17,10 +17,11 @@ class McSolver(Solver):
     def solve(self, env):
         """Returns a solution as a list of actions.
         """
-        critic = Critic()
+        #critic = Critic()
         #critic = AstarCritic(env)
+        critic = RandomCritic()
         path = self._solve(env, critic)
-        critic.save()
+        #critic.save()
         #print critic
 
         return path

@@ -1,6 +1,21 @@
 
 from soko.runtime import suppress_logging
 
+class RandomCritic(object):
+    def reward(self, actions, states):
+        pass
+
+    def punish(self, actions, states):
+        pass
+
+    def save(self):
+        pass
+
+    def evaluate(self, s, a):
+        """Returns 0.5 for everything.
+        """
+        return 0.5
+
 class AstarCritic(object):
     def __init__(self, env):
         from soko.solver import solver_lookup
