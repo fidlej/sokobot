@@ -130,12 +130,12 @@ def _choose_random_action(info, s, memory):
     for a in actions:
         next_s = env.predict(s, a)
         num_visits = memory.get_num_visits(next_s)
-        weights.append(critic.evaluate(s, a)/float(VISIT_PENALTY**num_visits))
+        weights.append(critic.evaluate(s, a) - VISIT_PENALTY**num_visits)
 
     if not weights:
         return None
 
-    a_index = _weighted_choice(weights)
+    a_index = _softmax(weights)
     return actions[a_index]
 
 def _sample(info, s, policy=_choose_random_action):
