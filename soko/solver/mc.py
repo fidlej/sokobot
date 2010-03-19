@@ -174,9 +174,8 @@ def _sample(info, s, policy=_choose_random_action):
 def _softmax(weights):
     """Returns the index of the choosen choice.
     """
-    temperature = 0.1
     max_w = max(weights)
-    softmax_weights = [math.exp((w - max_w)/temperature) for w in weights]
+    softmax_weights = [math.exp(w - max_w) for w in weights]
     return _weighted_choice(softmax_weights)
 
 def _weighted_choice(weights):
