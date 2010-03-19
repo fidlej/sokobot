@@ -32,7 +32,7 @@ class Critic(object):
         """Assigns the given credit to all actions on the given path.
         """
         # It uses the REINFORCE estimation of dPolicyValue(w)/dw_i.
-        # For softmax policy:
+        # For the softmax policy with move patterns:
         # dPolicyValue(w)/dw_i = reward_collected * move_i_was_used
         #
         # The weight is then updated to move the policyValue uphill:

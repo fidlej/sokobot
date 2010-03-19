@@ -30,7 +30,7 @@ class McSolver(Solver):
         s = env.init()
         info = _SearchInfo(env, critic)
         level = 1
-        num_attempts = 1
+        num_attempts = 10
         for i in xrange(num_attempts):
             path = _nested(info, s, level)
             #path = _sample(info, s)
@@ -91,7 +91,7 @@ def _choose_best_action(info, s, level, memory):
     for a in env.get_actions(s):
         next_s = env.predict(s, a)
         if level == 1:
-            path = _attempt_sample(info, next_s)
+            path = _sample(info, next_s)
         else:
             path = _nested(info, next_s, level - 1)
 
@@ -107,13 +107,6 @@ def _choose_best_action(info, s, level, memory):
     print "best action:", best_action, min_cost
     return best_action
 
-def _attempt_sample(info, s, num_attempts=10):
-    for i in xrange(num_attempts):
-        path = _sample(info, s)
-        if path is not None:
-            return path
-
-    return None
 
 def _is_goal(env, s):
     return env.estim_cost(s) == 0
