@@ -17,9 +17,9 @@ class McSolver(Solver):
     def solve(self, env):
         """Returns a solution as a list of actions.
         """
-        #critic = Critic()
+        critic = Critic()
         #critic = AstarCritic(env)
-        critic = RandomCritic()
+        #critic = RandomCritic()
         path = self._solve(env, critic)
         #critic.save()
         #print critic
@@ -175,8 +175,8 @@ def _softmax(weights):
     """Returns the index of the choosen choice.
     """
     temperature = 0.1
-    items = [math.exp(w/temperature) for w in weights]
-    return _weighted_choice(weights)
+    softmax_weights = [math.exp(w/temperature) for w in weights]
+    return _weighted_choice(softmax_weights)
 
 def _weighted_choice(weights):
     selection = random.random() * sum(weights)
