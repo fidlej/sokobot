@@ -175,7 +175,8 @@ def _softmax(weights):
     """Returns the index of the choosen choice.
     """
     temperature = 0.1
-    softmax_weights = [math.exp(w/temperature) for w in weights]
+    max_w = max(weights)
+    softmax_weights = [math.exp((w - max_w)/temperature) for w in weights]
     return _weighted_choice(softmax_weights)
 
 def _weighted_choice(weights):
