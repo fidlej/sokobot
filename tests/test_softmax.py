@@ -15,5 +15,9 @@ def test_softmax():
     mc._softmax(weights)
 
     expected_weights = [math.exp(w/0.1) for w in weights]
-    assert_equal(fake.weights, expected_weights)
+    assert_equal(_normalize(fake.weights), _normalize(expected_weights))
+
+def _normalize(weights):
+    total = float(sum(weights))
+    return [w/total for w in weights]
 
