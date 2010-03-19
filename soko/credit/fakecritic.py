@@ -12,9 +12,9 @@ class RandomCritic(object):
         pass
 
     def evaluate(self, s, a):
-        """Returns 0.5 for everything.
+        """Returns 0.0 for everything.
         """
-        return 0.5
+        return 0.0
 
 class AstarCritic(object):
     def __init__(self, env):
@@ -44,7 +44,7 @@ class AstarCritic(object):
 
         path = self.solver.solve(self.env, next_s)
         if path is None:
-            result = 0.0
+            result = -1.0
         else:
             result = 1.0
 

@@ -17,11 +17,7 @@ class Critic(object):
         self._assign_credit(actions, states, 1)
 
     def punish(self, actions, states):
-        if len(actions) == 0:
-            return
-        p_bad = 1.0/len(actions)
-        p_win = 1 - p_bad
-        self._assign_credit(actions, states, p_win)
+        self._assign_credit(actions, states, -1)
 
     def evaluate(self, s, a):
         """Returns a weight that the move is a good move.
@@ -35,9 +31,17 @@ class Critic(object):
     def _assign_credit(self, actions, states, credit):
         """Assigns the given credit to all actions on the given path.
         """
+        # It uses the REINFORCE estimation of dPolicyValue(w)/dw_i.
+        # For softmax policy:
+        # dPolicyValue(w)/dw_i = reward_collected * move_i_was_used
+        #
+        # The weight is then updated to move the policyValue uphill:
+        # w_i = w_i + alpha * dPolicyValue(w)/dw_i
+
+
         for move in _get_moves(states, actions):
-            old_value = self.credits.setdefault(move, DEFAULT_CREDIT)
-            self.credits[move] += LEARNING_RATE * (credit - old_value)
+            self.credits.setdefault(move, DEFAULT_CREDIT)
+            self.credits[move] += LEARNING_RATE * credit
 
     def __str__(self):
         output = ""
