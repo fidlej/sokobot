@@ -21,7 +21,7 @@ class McSolver(Solver):
         #critic = AstarCritic(env)
         #critic = RandomCritic()
         path = self._solve(env, critic)
-        #critic.save()
+        critic.save()
         #print critic
 
         return path
@@ -187,3 +187,4 @@ def _weighted_choice(weights):
             return i
 
     assert not "Wrong normalization"
+
