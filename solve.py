@@ -60,7 +60,7 @@ def _visualize(env, path, visualizers):
     for vis in visualizers:
         sys.stdout.write(vis.render(env, path))
 
-def main(use_psyco=False):
+def main(use_psyco=True):
     logging.basicConfig(level=logging.DEBUG)
     options, level_filename = _parse_args()
 
