@@ -7,7 +7,7 @@ from soko.visual.lengthvisualizer import calc_path_cost
 from soko.credit.assigning import Critic
 from soko.credit.fakecritic import AstarCritic, RandomCritic
 
-MAX_NUM_VISITS = 10
+MAX_NUM_VISITS = 3
 VISIT_PENALTY = 10
 MAX_COST = 100000
 
@@ -30,7 +30,7 @@ class McSolver(Solver):
         s = env.init()
         info = _SearchInfo(env, critic)
         level = 1
-        num_attempts = 10
+        num_attempts = 100
         for i in xrange(num_attempts):
             path = _nested(info, s, level)
             #path = _sample(info, s)
@@ -38,6 +38,14 @@ class McSolver(Solver):
                 return path
 
         return None
+
+
+def play(env, critic):
+    """Runs a single sample in the given env.
+    """
+    info = _SearchInfo(env, critic)
+    s = env.init()
+    return _sample(info, s)
 
 
 class _SearchInfo(object):
