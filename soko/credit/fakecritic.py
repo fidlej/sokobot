@@ -1,8 +1,8 @@
 
 from soko.runtime import suppress_logging
 
-class RandomCritic(object):
-    def reward(self, actions, states):
+class _DummyCritic(object):
+    def reward(self, env, actions, states):
         pass
 
     def punish(self, env, actions, states):
@@ -11,27 +11,30 @@ class RandomCritic(object):
     def save(self):
         pass
 
+
+class RandomCritic(_DummyCritic):
     def evaluate(self, s, a):
         """Returns 0.0 for everything.
         """
         return 0.0
 
-class AstarCritic(object):
+
+class EstimCritic(_DummyCritic):
+    def __init__(self, env):
+        self.env = env
+
+    def evaluate(self, s, a):
+        next_s = self.env.predict(s, a)
+        return self.env.estim_cost(next_s)
+
+
+class AstarCritic(_DummyCritic):
     def __init__(self, env):
         from soko.solver import solver_lookup
         env, solver = solver_lookup.create_task(env, "astar,hweight=2")
         self.env = env
         self.solver = solver
         self.cache = {}
-
-    def reward(self, actions, states):
-        pass
-
-    def punish(self, env, actions, states):
-        pass
-
-    def save(self):
-        pass
 
     @suppress_logging
     def evaluate(self, s, a):
