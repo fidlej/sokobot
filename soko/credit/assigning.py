@@ -34,16 +34,38 @@ class Critic(object):
         """Assigns the given credit to all actions on the given path.
         """
         # It uses the REINFORCE estimation of dPolicyValue(w)/dw_i.
-        # For the softmax policy with move patterns:
-        # dPolicyValue(w)/dw_i = reward_collected * move_i_was_used
+        # http://www.scholarpedia.org/article/Policy_gradient_methods
         #
-        # The weight is then updated to move the policyValue uphill:
+        # The policy parameters are updated to move the policyValue uphill:
         # w_i = w_i + alpha * dPolicyValue(w)/dw_i
-
+        # 
+        # For a generic policy:
+        # dPolicyValue(w)/dw_i ~= sum_k_till_Horizont(
+        #   dlog(pi(s_k, a_k)/dw1
+        #   ) * total_reward
+        #
+        #   where the correct dPolicyValue would be the expected value
+        #   over many trials.
+        #
+        # For the softmax policy:
+        # dPolicyValue(w)/dw_i ~= sum_k_till_Horizont(
+        #   dQ(s_k,a_k)/dw_i - sum_a'(pi(s_k,a') * dQ(s_k, a')/d_wi)
+        #   ) * total_reward
+        #
+        # For Q(s,a) = w_1*match_1(s,a) + w_2*match_2(s,a) + ...:
+        # dQ(s,a)/dw_i = match_i(s,a)
+        #
+        # For having exactly one match per state:
+        # dPolicyValue(w)/dw_i ~= (1 - pi(s,a)) * total_reward
+        #   if there is (s,a) with match_i(s,a) == 1
+        #   else 0
 
         for move in _get_moves(states, actions):
             self.credits.setdefault(move, DEFAULT_CREDIT)
-            self.credits[move] += LEARNING_RATE * credit
+            #TODO: compute the pi(s,a)
+            pi = 0
+            gradient = (1 - pi) * credit
+            self.credits[move] += LEARNING_RATE * gradient
 
     def __str__(self):
         output = ""
