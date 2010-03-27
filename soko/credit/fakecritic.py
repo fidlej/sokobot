@@ -20,6 +20,11 @@ class RandomCritic(_DummyCritic):
 
 
 class EstimCritic(_DummyCritic):
+    """A critic that uses env.estim_cost().
+    It isn't good for the MC simulations,
+    because it does not learn from its mistakes.
+    It is stubborn.
+    """
     def __init__(self, env):
         self.env = env
 
