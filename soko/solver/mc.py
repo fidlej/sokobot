@@ -143,12 +143,12 @@ def _sample(info, s, policy=_choose_random_action):
         memory.inc_num_visits(s)
         a = policy(info, s, memory)
         if a is None:
-            critic.punish(path, state_indexes)
+            critic.punish(env, path, state_indexes)
             return None
 
         s = env.predict(s, a)
         if memory.get_num_visits(s) > MAX_NUM_VISITS:
-            critic.punish(path, state_indexes)
+            critic.punish(env, path, state_indexes)
             return None
 
         # Removal of cycles from the path
@@ -161,7 +161,7 @@ def _sample(info, s, policy=_choose_random_action):
             del path[s_index:]
             del state_indexes[s_index +1:]
 
-    critic.reward(path, state_indexes)
+    critic.reward(env, path, state_indexes)
     return path
 
 def _softmax(weights):

@@ -1,4 +1,6 @@
 
+import math
+
 from soko.struct.modeling import immutablize
 from soko.credit.storing import Storage
 
@@ -13,13 +15,13 @@ class Critic(object):
             self.storage = Storage(storage_filename)
             self.credits = self.storage.load(default=self.credits)
 
-    def reward(self, actions, states):
+    def reward(self, env, actions, states):
         """Gives more credit to the given actions.
         """
-        self._assign_credit(actions, states, 1)
+        self._assign_credit(env, actions, states, 1)
 
-    def punish(self, actions, states):
-        self._assign_credit(actions, states, -1)
+    def punish(self, env, actions, states):
+        self._assign_credit(env, actions, states, -1)
 
     def evaluate(self, s, a):
         """Returns a weight that the move is a good move.
@@ -30,7 +32,7 @@ class Critic(object):
     def save(self):
         self.storage.save(self.credits)
 
-    def _assign_credit(self, actions, states, credit):
+    def _assign_credit(self, env, actions, states, credit):
         """Assigns the given credit to all actions on the given path.
         """
         # It uses the REINFORCE estimation of dPolicyValue(w)/dw_i.
@@ -60,12 +62,22 @@ class Critic(object):
         #   if there is (s,a) with match_i(s,a) == 1
         #   else 0
 
-        for move in _get_moves(states, actions):
-            self.credits.setdefault(move, DEFAULT_CREDIT)
-            #TODO: compute the pi(s,a)
-            pi = 0
+        for s, a in zip(states, actions):
+            pi = self._calc_softmax_prob(env, s, a)
+            assert 0.0 <= pi <= 1.0
             gradient = (1 - pi) * credit
+            move = _identify_move(s, a)
+            self.credits.setdefault(move, DEFAULT_CREDIT)
             self.credits[move] += LEARNING_RATE * gradient
+
+    def _calc_softmax_prob(self, env, s, a):
+        """Returns the probability of the given (s,a) pair
+        under the softmax policy.
+        """
+        weights = [self.evaluate(s, other) for other in env.get_actions(s)]
+        a_w = self.evaluate(s, a)
+        max_w = max(weights)
+        return math.exp(a_w - max_w) / sum(math.exp(w - max_w) for w in weights)
 
     def __str__(self):
         output = ""
@@ -75,15 +87,6 @@ class Critic(object):
             output += "%s %s" % (Move(move), credit)
         output += "unique_moves: %s" % len(pairs)
         return output
-
-
-
-def _get_moves(states, actions):
-    moves = []
-    for s, a in zip(states, actions):
-        move = _identify_move(s, a)
-        moves.append(move)
-    return moves
 
 
 class Move(object):

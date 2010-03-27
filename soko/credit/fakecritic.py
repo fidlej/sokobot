@@ -5,7 +5,7 @@ class RandomCritic(object):
     def reward(self, actions, states):
         pass
 
-    def punish(self, actions, states):
+    def punish(self, env, actions, states):
         pass
 
     def save(self):
@@ -27,7 +27,7 @@ class AstarCritic(object):
     def reward(self, actions, states):
         pass
 
-    def punish(self, actions, states):
+    def punish(self, env, actions, states):
         pass
 
     def save(self):
