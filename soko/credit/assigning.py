@@ -6,7 +6,7 @@ from soko.credit.storing import Storage
 
 MARGIN = 1
 DEFAULT_CREDIT = 0.9
-LEARNING_RATE = 0.1
+LEARNING_RATE = 0.5
 
 class Critic(object):
     def __init__(self, storage_filename="../export/credit/critic.pickle"):
@@ -64,7 +64,6 @@ class Critic(object):
 
         for s, a in zip(states, actions):
             pi = self._calc_softmax_prob(env, s, a)
-            assert 0.0 <= pi <= 1.0
             gradient = (1 - pi) * credit
             move = _identify_move(s, a)
             self.credits.setdefault(move, DEFAULT_CREDIT)
@@ -77,7 +76,9 @@ class Critic(object):
         weights = [self.evaluate(s, other) for other in env.get_actions(s)]
         a_w = self.evaluate(s, a)
         max_w = max(weights)
-        return math.exp(a_w - max_w) / sum(math.exp(w - max_w) for w in weights)
+        pi = math.exp(a_w - max_w) / sum(math.exp(w - max_w) for w in weights)
+        assert 0.0 <= pi <= 1.0
+        return pi
 
     def __str__(self):
         output = ""
