@@ -7,9 +7,11 @@ DEFAULT_CREDIT = 0.9
 LEARNING_RATE = 0.1
 
 class Critic(object):
-    def __init__(self):
-        self.storage = Storage("../export/credit/critic.pickle")
-        self.credits = self.storage.load(default={})
+    def __init__(self, storage_filename="../export/credit/critic.pickle"):
+        self.credits = {}
+        if storage_filename:
+            self.storage = Storage(storage_filename)
+            self.credits = self.storage.load(default=self.credits)
 
     def reward(self, actions, states):
         """Gives more credit to the given actions.
