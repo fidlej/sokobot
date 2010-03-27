@@ -55,7 +55,7 @@ class Critic(object):
         # For Q(s,a) = w_1*match_1(s,a) + w_2*match_2(s,a) + ...:
         # dQ(s,a)/dw_i = match_i(s,a)
         #
-        # For having exactly one match per state:
+        # For having patterns that match only in one state:
         # dPolicyValue(w)/dw_i ~= (1 - pi(s,a)) * total_reward
         #   if there is (s,a) with match_i(s,a) == 1
         #   else 0
