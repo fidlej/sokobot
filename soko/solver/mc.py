@@ -20,13 +20,13 @@ class McSolver(Solver):
         critic = Critic()
         #critic = AstarCritic(env)
         #critic = RandomCritic()
-        path = self._solve(env, critic)
+        path = self.solve_with_critic(env, critic)
         critic.save()
         #print critic
 
         return path
 
-    def _solve(self, env, critic):
+    def solve_with_critic(self, env, critic):
         s = env.init()
         info = _SearchInfo(env, critic)
         level = 1
@@ -38,14 +38,6 @@ class McSolver(Solver):
                 return path
 
         return None
-
-
-def play(env, critic):
-    """Runs a single sample in the given env.
-    """
-    info = _SearchInfo(env, critic)
-    s = env.init()
-    return _sample(info, s)
 
 
 class _SearchInfo(object):
@@ -84,7 +76,7 @@ class _Memory(object):
 
 def _nested(info, s, level):
     def policy(info, s, memory):
-        print info.env.format(s)
+        #print info.env.format(s)
         return _choose_best_action(info, s, level, memory)
 
     return _sample(info, s, policy)
@@ -112,7 +104,7 @@ def _choose_best_action(info, s, level, memory):
             min_cost = cost
             best_action = a
 
-    print "best action:", best_action, min_cost
+    #print "best action:", best_action, min_cost
     return best_action
 
 

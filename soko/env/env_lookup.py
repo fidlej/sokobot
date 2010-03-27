@@ -78,6 +78,9 @@ class CallCounter(object):
     def get_count(self):
         return self.count
 
+    def reset(self):
+        self.count = 0
+
     def _inc(self):
         self.count += 1
         if self.limit and self.count >= self.limit:
