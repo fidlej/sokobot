@@ -124,7 +124,7 @@ def open(file=None):
 
 if __name__ in '__main___':
     d = SQLhash('example')
-    print(list(d), 'start')
+    print list(d), 'start'
     d['abc'] = 'lmno'
     print(d['abc'])
     d['abc'] = 'rsvp'
@@ -132,7 +132,7 @@ if __name__ in '__main___':
     print(d.items())
     print(d.values())
     print(d.keys())
-    print(list(d), 'list')
+    print list(d), 'list'
     d.update(p='x', q='y', r='z')
     print(d.items())
 
@@ -158,5 +158,5 @@ if __name__ in '__main___':
     print(list(d))
     d['xyz'] = 'pdq'
 
-    print()
+    print
     d.close()
