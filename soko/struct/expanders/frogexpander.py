@@ -1,5 +1,5 @@
 """
-A maze based on the Spanish flag puzzle with frogs.
+A maze based on the Spanish flash puzzle with frogs.
 http://funstufftosee.com/frogleaptest.html
 """
 
