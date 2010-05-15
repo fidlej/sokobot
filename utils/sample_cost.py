@@ -3,6 +3,9 @@
 import sokopath
 from soko.env import env_lookup
 from soko.solver import solver_lookup
+from soko import formatting
+
+from pylib import picklite
 
 def _create_task(level_filename, solver_spec="astar"):
     env_wrapper = env_lookup.create_env(level_filename)
@@ -56,6 +59,15 @@ class Collector(object):
 def _get_children(env, s):
     return [env.predict(s, a) for a in env.get_actions(s)]
 
+def _save_values(store, property, state_values):
+    for s, value in state_values.iteritems():
+        store[_get_key(property, s)] = value
+
+def _get_key(property, s):
+    s_key = formatting.stringify(s)
+    return "%s:\n%s" % (property, s_key)
+
+
 def main():
     level_filename = "data/sokoban/sokoban2.txt"
     env, solver = _create_task(level_filename)
@@ -64,9 +76,13 @@ def main():
     collector.collect_costs(s, spread=3)
 
     state_costs = collector.state_costs
-    print len(state_costs)
-    #for s, cost in state_costs.iteritems():
-    #    print cost
+    print "collected states:", len(state_costs)
 
+    store = picklite.open("../export/sample.plite")
+    _save_values(store, "cost", state_costs)
+
+    state_children = dict((s, _get_children(env, s)) for s in
+            state_costs.iterkeys())
+    _save_values(store, "children", state_children)
 
 main()
