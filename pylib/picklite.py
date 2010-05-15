@@ -4,6 +4,10 @@ A simple key-value store based on Pickle and sqlite.
 
 Inspired by Raymond Hettinger's recipe:
 http://code.activestate.com/recipes/576638-draft-for-an-sqlite3-based-dbm/
+
+Licensed under MIT License.
+Copyright (c) 2010 Ivo Danihelka
+Copyright (c) 2009 Raymond Hettinger
 """
 
 __all__ = ['open']
@@ -119,40 +123,40 @@ def open(file=None):
 
 
 if __name__ in '__main___':
-    for d in SQLhash(), SQLhash('example'):
-        print(list(d), 'start')
-        d['abc'] = 'lmno'
+    d = SQLhash('example')
+    print(list(d), 'start')
+    d['abc'] = 'lmno'
+    print(d['abc'])
+    d['abc'] = 'rsvp'
+    d['xyz'] = 'pdq'
+    print(d.items())
+    print(d.values())
+    print(d.keys())
+    print(list(d), 'list')
+    d.update(p='x', q='y', r='z')
+    print(d.items())
+
+    del d['abc']
+    try:
         print(d['abc'])
-        d['abc'] = 'rsvp'
-        d['xyz'] = 'pdq'
-        print(d.items())
-        print(d.values())
-        print(d.keys())
-        print(list(d), 'list')
-        d.update(p='x', q='y', r='z')
-        print(d.items())
+    except KeyError:
+        pass
+    else:
+        raise Exception('oh noooo!')
 
+    try:
         del d['abc']
-        try:
-            print(d['abc'])
-        except KeyError:
-            pass
-        else:
-            raise Exception('oh noooo!')
+    except KeyError:
+        pass
+    else:
+        raise Exception('drat!')
 
-        try:
-            del d['abc']
-        except KeyError:
-            pass
-        else:
-            raise Exception('drat!')
+    print(list(d))
+    d.clear()
+    print(list(d))
+    d.update(p='x', q='y', r='z')
+    print(list(d))
+    d['xyz'] = 'pdq'
 
-        print(list(d))
-        d.clear()
-        print(list(d))
-        d.update(p='x', q='y', r='z')
-        print(list(d))
-        d['xyz'] = 'pdq'
-
-        print()
-        d.close()
+    print()
+    d.close()
