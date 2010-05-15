@@ -174,7 +174,7 @@ if __name__ in '__main___':
     print(list(d))
     d['xyz'] = 'pdq'
 
-    d['pickled'] = {'key':'value', 'other':1234}
+    d['pickled'] = {'key':'value', 'other':1234, 'a list':[1,2,'good']}
     print d
 
     print
