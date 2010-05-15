@@ -30,9 +30,9 @@ class SQLhash(UserDict.DictMixin):
             """
         # The detection of types is needed for automatic unpickling.
         self.conn = sqlite3.connect(filename,
+                isolation_level=None,
                 detect_types=sqlite3.PARSE_DECLTYPES)
         self.conn.execute(MAKE_SHELF)
-        self.conn.commit()
 
     def __len__(self):
         GET_LEN =  'SELECT COUNT(*) FROM shelf'
@@ -74,14 +74,12 @@ class SQLhash(UserDict.DictMixin):
         ADD_ITEM = 'REPLACE INTO shelf (key, value) VALUES (?,?)'
         value = _serialize(value)
         self.conn.execute(ADD_ITEM, (key, value))
-        self.conn.commit()
 
     def __delitem__(self, key):
         if key not in self:
             raise KeyError(key)
         DEL_ITEM = 'DELETE FROM shelf WHERE key = ?'
         self.conn.execute(DEL_ITEM, (key,))
-        self.conn.commit()
 
     def update(self, items=(), **kwds):
         if hasattr(items, 'items'):
@@ -89,18 +87,15 @@ class SQLhash(UserDict.DictMixin):
         items = ((k, _serialize(v)) for k, v in items)
         UPDATE_ITEMS = 'REPLACE INTO shelf (key, value) VALUES (?, ?)'
         self.conn.executemany(UPDATE_ITEMS, items)
-        self.conn.commit()
         if kwds:
             self.update(kwds)
 
     def clear(self):
         CLEAR_ALL = 'DELETE FROM shelf;  VACUUM;'
         self.conn.executescript(CLEAR_ALL)
-        self.conn.commit()
 
     def close(self):
         if self.conn is not None:
-            self.conn.commit()
             self.conn.close()
             self.conn = None
 
