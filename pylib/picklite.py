@@ -16,7 +16,10 @@ import sqlite3
 import UserDict
 import cPickle as pickle
 
-#sqlite3.register_converter('pickle', pickle.loads)
+sqlite3.register_converter('pickle', pickle.loads)
+
+def _serialize(value):
+    return sqlite3.Binary(pickle.dumps(value, protocol=2))
 
 class SQLhash(UserDict.DictMixin):
 
@@ -25,7 +28,9 @@ class SQLhash(UserDict.DictMixin):
             key TEXT NOT NULL PRIMARY KEY,
             value PICKLE NOT NULL)
             """
-        self.conn = sqlite3.connect(filename)
+        # The detection of types is needed for automatic unpickling.
+        self.conn = sqlite3.connect(filename,
+                detect_types=sqlite3.PARSE_DECLTYPES)
         self.conn.execute(MAKE_SHELF)
         self.conn.commit()
 
@@ -58,6 +63,7 @@ class SQLhash(UserDict.DictMixin):
 
     def __setitem__(self, key, value):
         ADD_ITEM = 'REPLACE INTO shelf (key, value) VALUES (?,?)'
+        value = _serialize(value)
         self.conn.execute(ADD_ITEM, (key, value))
         self.conn.commit()
 
@@ -71,6 +77,7 @@ class SQLhash(UserDict.DictMixin):
     def update(self, items=(), **kwds):
         if hasattr(items, 'items'):
             items = items.items()
+        items = ((k, _serialize(v)) for k, v in items)
         UPDATE_ITEMS = 'REPLACE INTO shelf (key, value) VALUES (?, ?)'
         self.conn.executemany(UPDATE_ITEMS, items)
         self.conn.commit()
@@ -157,6 +164,9 @@ if __name__ in '__main___':
     d.update(p='x', q='y', r='z')
     print(list(d))
     d['xyz'] = 'pdq'
+
+    d['pickled'] = {'key':'value', 'other':1234}
+    print d
 
     print
     d.close()
