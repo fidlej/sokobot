@@ -36,9 +36,9 @@ class OutputField(object):
             self.field[y + sy][x + sx] = model.mark
 
     def __str__(self):
-        rows = []
-        for row in self.field:
-            rows.append(''.join(row))
+        return stringify(self.field)
 
-        return "\n".join(rows)
+
+def stringify(field):
+    return "\n".join("".join(line) for line in field)
 

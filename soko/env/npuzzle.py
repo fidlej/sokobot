@@ -1,5 +1,5 @@
 
-from soko.formatting import OutputField
+from soko import formatting
 from soko.env.env import Env, Action
 from pylib import v2
 
@@ -58,10 +58,7 @@ class PuzzleEnv(Env):
         return 0
 
     def format(self, s):
-        rows = []
-        for row in s:
-            rows.append(''.join(row))
-        return "\n".join(rows)
+        return formatting.stringify(s)
 
 
 def _exchange(s, apos, bpos):

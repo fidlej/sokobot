@@ -1,4 +1,6 @@
 
+from soko import formatting
+
 class Maze(object):
     """An immutable maze info.
     """
@@ -45,10 +47,7 @@ class Maze(object):
         return rows
 
     def __str__(self):
-        rows = []
-        for line in self.field:
-            rows.append(''.join(line))
-        return "\n".join(rows)
+        return formatting.stringify(self.field)
 
 
 def parse_maze(level_filename):

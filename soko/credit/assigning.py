@@ -3,6 +3,7 @@ import math
 
 from soko.struct.modeling import immutablize
 from soko.credit.storing import Storage
+from soko import formatting
 
 MARGIN = 1
 DEFAULT_CREDIT = 0.9
@@ -101,10 +102,7 @@ class Move(object):
         return hash(self.pattern)
 
     def __str__(self):
-        rows = []
-        for row in self.pattern:
-            rows.append("".join(row))
-        return "\n".join(rows)
+        return formatting.stringify(self.pattern)
 
 def _identify_move(s, a):
     #TODO: ignore non-struct states and actions
