@@ -38,17 +38,26 @@ class SQLhash(UserDict.DictMixin):
         GET_LEN =  'SELECT COUNT(*) FROM shelf'
         return self.conn.execute(GET_LEN).fetchone()[0]
 
-    def keys(self):
+    def iterkeys(self):
         return SQLhashKeysView(self)
 
-    def values(self):
+    def itervalues(self):
         return SQLhashValuesView(self)
 
-    def items(self):
+    def iteritems(self):
         return SQLhashItemsView(self)
 
+    def keys(self):
+        return list(self.iterkeys())
+
+    def values(self):
+        return list(self.itervalues())
+
+    def items(self):
+        return list(self.iteritems())
+
     def __iter__(self):
-        return iter(self.keys())
+        return iter(self.iterkeys())
 
     def __contains__(self, key):
         GET_ITEM = 'SELECT value FROM shelf WHERE key = ?'
