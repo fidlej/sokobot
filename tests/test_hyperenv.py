@@ -10,8 +10,8 @@ class Test(unittest.TestCase):
     def setUp(self):
         field = [
                 "#########",
-                "#x..o...#",
-                "###....G#",
+                "#@  $   #",
+                "###    .#",
                 "#########",
                 ]
         maze = mazing.Maze(field)
@@ -39,8 +39,8 @@ class Test(unittest.TestCase):
     def test_get_connected(self):
         field = [
                 "#######",
-                "#x.o..#",
-                "###..G#",
+                "#@ $  #",
+                "###  .#",
                 "#######",
                 ]
         self._init_env(mazing.Maze(field))
