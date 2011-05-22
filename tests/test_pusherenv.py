@@ -10,8 +10,8 @@ class PusherEnvTest(unittest.TestCase):
     def setUp(self):
         field = [
                 "######",
-                "#xo..#",
-                "#.ooG#",
+                "#@$  #",
+                "# $$.#",
                 "######",
                 ]
         maze = Maze(field)
