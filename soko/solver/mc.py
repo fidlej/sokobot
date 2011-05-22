@@ -119,7 +119,7 @@ def _choose_random_action(info, s, memory):
     #print env.format(s)
     critic = info.critic
     weights = []
-    actions =  env.get_actions(s)
+    actions = env.get_actions(s)
     for a in actions:
         next_s = env.predict(s, a)
         num_visits = memory.get_num_visits(next_s)
