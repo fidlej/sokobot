@@ -2,13 +2,14 @@
 import logging
 import unittest
 
-from soko.estim.pg import extender, extender_pusher, estimator
-from soko.env import env_lookup
+from soko import mazing
+from soko.estim.pg import extender_pusher, estimator
+from soko.env.pusherenv import SokobanEnv
 
 class Test(unittest.TestCase):
     def setUp(self):
         level_filename = "data/sokoban/microban/level001.txt"
-        self.env = env_lookup.create_env(level_filename)
+        self.env = SokobanEnv(mazing.parse_maze(level_filename))
         self.extender = extender_pusher.SokobanExtender(self.env)
 
     def test_plan_graph(self):

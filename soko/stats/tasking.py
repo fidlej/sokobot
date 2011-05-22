@@ -15,10 +15,10 @@ def _add(level_filename, spec):
 
 def get_measured_solvers():
     solvers = [
-        #"astar",
+        "astar",
         #"astar,hweight=1.2",
-        "macroastar",
-        "macroastar,hweight=2",
+        #"macroastar",
+        #"macroastar,hweight=2",
         #"pgastar",
         #"pgastar,hweight=2",
         #"pgastar,hweight=5",
