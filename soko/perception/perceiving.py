@@ -9,6 +9,7 @@ MASK = (
         "  1  ",
         "  1  ",
         )
+
 OUTSIDE_MARK = " "
 
 
@@ -44,7 +45,8 @@ class SokobanPerceiver:
         return Action(cmd)
 
     def encode_state(self, env, s):
-        rows = env.format(s)
+        field = env.format(s)
+        rows = field.split("\n")
         (player_pos, boxes) = s
         return _encode_percept(rows, *player_pos)
 
@@ -64,17 +66,20 @@ def _encode_percept(rows, center_x, center_y):
 
 def _get_masked(rows, corner_x, corner_y):
     tiles = []
-    for mask_y, row in enumerate(MASK):
+    for mask_y, mask_row in enumerate(MASK):
         y = corner_y + mask_y
-        for mask_x, flag in enumerate(row):
+        for mask_x, flag in enumerate(mask_row):
             if flag != "1":
                 continue
 
             x = corner_x + mask_x
-            try:
-                tile = rows[y][x]
-            except IndexError:
+            if x < 0 or y < 0:
                 tile = OUTSIDE_MARK
+            else:
+                try:
+                    tile = rows[y][x]
+                except IndexError:
+                    tile = OUTSIDE_MARK
 
             tiles.append(tile)
 
