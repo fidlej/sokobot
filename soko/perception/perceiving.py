@@ -35,9 +35,6 @@ class SokobanPerceiver:
         return CMD_TO_ACTION_BITS[action.get_cmd()]
 
     def decode_action(self, bits):
-        """Encodes up, left, right, down action bits.
-        The order of the directions corresponds to the perception bits.
-        """
         cmd = self.ACTION_BITS_TO_CMD.get(tuple(bits))
         if cmd is None:
             raise ValueError("Invalid action bits: %s" % bits)
