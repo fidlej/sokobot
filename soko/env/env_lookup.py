@@ -15,6 +15,7 @@ ENVS = dict(
         soko=SokobanEnv,
         microban=SokobanEnv,
         xsokoban=SokobanEnv,
+        multiban=EnvGlue,
         fillets=FilletsEnv,
         npuzzle=PuzzleEnv,
         )
