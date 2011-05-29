@@ -7,6 +7,8 @@ from soko.env.hyperenv import HyperEnv
 from soko.env.relaxedenv import RelaxedEnv
 from soko.env.estimenv import EstimPgEnv
 
+from soko.perception.solver import PerceptSolver
+
 """
 Solver name format:
 name,option1=value,option2=value
@@ -46,6 +48,7 @@ SOLVERS = dict(
         rbfs=rbfs.RbfsSolver,
         rida=rbfs.IdaSolver,
         mc=mc.McSolver,
+        percept=PerceptSolver,
         )
 
 PREFIXES = (
