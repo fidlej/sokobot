@@ -63,7 +63,7 @@ def find_path(env, s, cost_fn):
             next_s = env.predict(s, a)
             num_visited += 1
             if next_s in closed:
-                # An consistent heuristic is assumed
+                # A consistent heuristic is assumed
                 # so no reopening is needed.
                 continue
 
