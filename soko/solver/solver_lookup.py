@@ -7,7 +7,10 @@ from soko.env.hyperenv import HyperEnv
 from soko.env.relaxedenv import RelaxedEnv
 from soko.env.estimenv import EstimPgEnv
 
-from soko.perception.solver import PerceptSolver
+try:
+    from soko.perception.solver import PerceptSolver
+except ImportError:
+    PerceptSolver = None
 
 """
 Solver name format:
@@ -37,6 +40,7 @@ DEFAULT_CONFIG = dict(
         unprefpenalty=0,
         glimit=3,
         greduce=1,
+        rollout=False,
         )
 
 Config = namedtuple("Config", " ".join(DEFAULT_CONFIG.keys()))

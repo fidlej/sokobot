@@ -25,14 +25,17 @@ class SokobanPerceiver:
             ACTION_BITS_TO_CMD.iteritems())
 
 
+    def get_num_percept_bits(self):
+        return 8 * 3
+
     def get_num_action_bits(self):
-        return 4
+        return len(self.CMD_TO_ACTION_BITS[0])
 
     def encode_action(self, action):
         """Encodes up, left, right, down action bits.
         The order of the directions corresponds to the perception bits.
         """
-        return CMD_TO_ACTION_BITS[action.get_cmd()]
+        return self.CMD_TO_ACTION_BITS[action.get_cmd()]
 
     def decode_action(self, bits):
         cmd = self.ACTION_BITS_TO_CMD.get(tuple(bits))
@@ -45,7 +48,9 @@ class SokobanPerceiver:
         field = env.format(s)
         rows = field.split("\n")
         (player_pos, boxes) = s
-        return _encode_percept(rows, *player_pos)
+        bits = _encode_percept(rows, *player_pos)
+        assert len(bits) == self.get_num_percept_bits()
+        return bits
 
 
 def _encode_percept(rows, center_x, center_y):

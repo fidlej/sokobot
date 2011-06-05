@@ -1,5 +1,4 @@
 
-from soko.env import coding
 from soko.visual.lengthvisualizer import calc_costs
 
 class StateVisualizer(object):

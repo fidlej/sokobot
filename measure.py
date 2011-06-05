@@ -10,6 +10,7 @@ from soko import runtime
 from soko.stats import tasking, resulting
 from soko.stats.resulting import Result
 from soko.visual.lengthvisualizer import calc_path_cost
+#from soko.perception import saving
 
 def _measure(task, state_limit=None):
     """Computes the given task
@@ -32,6 +33,7 @@ def _measure(task, state_limit=None):
     solution = _render_solution(env, path, counter)
     cost = calc_path_cost(path)
     resulting.store_solution(task, solution)
+    #saving.save_perception(env, path)
     return Result(True, len(path), cost, num_visited)
 
 def _render_solution(env, path, call_counter):
