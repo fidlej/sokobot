@@ -38,25 +38,27 @@ class PerceptSolver(Solver):
         return path
 
 
-def _prepare_model(perceiver):
+def _prepare_model(perceiver, num_remembered_steps):
     num_action_bits = perceiver.get_num_action_bits()
     return _get_trained_agent(perceiver.get_num_percept_bits(),
-            num_action_bits)
+            num_action_bits, num_remembered_steps)
 
 
 class PerceptPolicy:
     def __init__(self):
+        self.num_remembered_steps = 2
         self.perceiver = perceiving.SokobanPerceiver()
-        self.agent_model = _prepare_model(self.perceiver)
+        self.agent_model = _prepare_model(self.perceiver,
+                self.num_remembered_steps)
 
     def init_history(self, env, node):
         self.agent_model.switch_history()
         self._show_history(env, self.agent_model, node)
 
-    def _show_history(self, env, agent_model, node, max_steps=2):
+    def _show_history(self, env, agent_model, node):
         from soko.env.env import Action
         sas = [node.s]
-        for i in xrange(max_steps):
+        for i in xrange(self.num_remembered_steps):
             if node.prev_node is None:
                 break
             sas.insert(0, node.a)
@@ -106,12 +108,12 @@ def _advance_bit(model):
     return bit
 
 
-def _get_trained_agent(num_percept_bits, num_action_bits):
+def _get_trained_agent(num_percept_bits, num_action_bits,
+        num_remembered_steps):
     train_seqs = saving.load_training_seqs()
     #TEST: don't limit the number of used seqs
     train_seqs = train_seqs[:15]
 
-    num_remembered_steps = 2
     max_depth = (num_remembered_steps * (num_percept_bits + num_action_bits) +
             num_action_bits)
     agent_model = factored.create_model(max_depth=max_depth)
