@@ -8,7 +8,7 @@ from soko.env.relaxedenv import RelaxedEnv
 from soko.env.estimenv import EstimPgEnv
 
 try:
-    from soko.perception.solver import PerceptSolver
+    from soko.perception.policy import PerceptSolver
 except ImportError:
     PerceptSolver = None
 

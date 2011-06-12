@@ -133,7 +133,7 @@ class _RolloutExpander:
     def __init__(self, tools):
         self.tools = tools
         #self.policy = _RandomPolicy()
-        from soko.perception.solver import PerceptPolicy
+        from soko.perception.policy import PerceptPolicy
         self.policy = PerceptPolicy()
 
     def expand_node(self, env, node):
