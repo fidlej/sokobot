@@ -24,9 +24,11 @@ class SokobanPerceiver:
     CMD_TO_ACTION_BITS = dict((v, k) for k, v in
             ACTION_BITS_TO_CMD.iteritems())
 
+    def __init__(self):
+        self.num_percept_bits = len(_encode_percept([], 0, 0))
 
     def get_num_percept_bits(self):
-        return 8 * 3
+        return self.num_percept_bits
 
     def get_num_action_bits(self):
         return len(self.CMD_TO_ACTION_BITS[0])
@@ -49,7 +51,7 @@ class SokobanPerceiver:
         rows = field.split("\n")
         (player_pos, boxes) = s
         bits = _encode_percept(rows, *player_pos)
-        assert len(bits) == self.get_num_percept_bits()
+        assert len(bits) == self.num_percept_bits
         return bits
 
 
