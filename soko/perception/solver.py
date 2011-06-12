@@ -79,9 +79,11 @@ class PerceptPolicy:
         try:
             action = self.perceiver.decode_action(action_bits)
         except ValueError, e:
+            logging.warn("predicted invalid action_bits: %s", action_bits)
             return None
 
         if action.cmd not in [a.cmd for a in actions]:
+            logging.info("predicted impossible action: %s", action_bits)
             return None
 
         return action
