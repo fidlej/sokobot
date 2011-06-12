@@ -4,7 +4,6 @@ from soko.solver.solver import Solver
 from soko.perception import perceiving, saving
 
 from libctw import factored, modeling
-import random
 
 
 class PerceptSolver(Solver):
@@ -99,7 +98,7 @@ def _advance(model, num_bits):
 def _advance_bit(model):
     one_p = model.predict_one()
     assert 0 <= one_p <= 1.0, "invalid P: %s" % one_p
-    if one_p >= random.random():
+    if one_p >= 0.5:
         bit = 1
     else:
         bit = 0
